@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2022/11/30 14:56:13 by snagat           ###   ########.fr       */
+/*   Updated: 2022/12/02 16:40:30 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ class vector {
 
 public:
 // types:
+
+	typedef T value_type;
 	typedef typename Allocator::reference reference;
 	
 	typedef typename Allocator::const_reference const_reference;
@@ -28,11 +30,11 @@ public:
 	
 	// typedef Iterator<int>   iterator;
 	typedef size_t          size_type;
+	// typedef My_iter< value_type>		iterator;
 	// typedef implementation defined iterator; 
 	// typedef implementation defined const_iterator; 
 	// typedef implementation defined size_type;
 	// typedef implementation defined difference_type;
-	typedef T value_type;
 	
 	typedef Allocator allocator_type;
 	
@@ -44,7 +46,6 @@ public:
 	
 	explicit vector(const Allocator& alloc = Allocator())
 	{
-		puts("jdatek is fat");
 		this->arr = get_allocator().allocate(1);
 		this->Capacity = 0;
 		this->Size = 0;
@@ -149,7 +150,6 @@ public:
 	const_reference back() const;
 	// 23.2.4.3 modifiers:
 	void push_back(const T& x);
-	
 	void pop_back();
 	
 	// iterator insert(iterator position, const T& x);
