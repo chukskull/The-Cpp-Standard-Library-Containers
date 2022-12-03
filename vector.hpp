@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2022/12/02 16:40:30 by snagat           ###   ########.fr       */
+/*   Updated: 2022/12/03 17:54:35 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define VECTOR_HPP
 
 #include <iostream>
+#include <vector>
+#include <iterator>
+#include "random_iter.hpp"
 
 namespace ft {
 template <class T, class Allocator = std::allocator<T> >
@@ -28,13 +31,12 @@ public:
 	typedef typename Allocator::const_reference const_reference;
 	typedef typename Allocator::pointer     pointer;
 	
-	// typedef Iterator<int>   iterator;
-	typedef size_t          size_type;
-	// typedef My_iter< value_type>		iterator;
+	typedef size_t          			size_type;
+	typedef My_iter<value_type>		iterator;
 	// typedef implementation defined iterator; 
 	// typedef implementation defined const_iterator; 
 	// typedef implementation defined size_type;
-	// typedef implementation defined difference_type;
+	typedef typename	My_iter<value_type>::difference_type	difference_type;
 	
 	typedef Allocator allocator_type;
 	
@@ -62,9 +64,25 @@ public:
 		this->Size = n;
 		this->Capacity = n;
 	}
-	// template <class InputIterator>
-	// vector(InputIterator first, InputIterator last,
-	// const Allocator& = Allocator()){};
+	template <class InputIterator>
+	vector(InputIterator first, InputIterator last,
+	const Allocator& = Allocator())
+	{
+		difference_type	length;
+
+		length = TheDistance(first, last);
+		this->arr = _alloc.allocate(length);
+		for(int i = 0; i < length; i++)
+		{
+			this->_alloc.construct(&arr[i], *first);
+			first++;
+		}
+		this->Size = length;
+		this->Capacity = length;
+		
+		
+	}
+	
 	vector(const vector<T,Allocator>& x)
 	{
 		this->_alloc = Allocator();
@@ -99,11 +117,15 @@ public:
 		return this->arr;
 	}
 	// iterators:
-	// iterator begin();
+	iterator begin(){
+		return iterator(&this->arr[0]);
+	}
 	
 	// const_iterator begin() const;
 	
-	// iterator end();
+	iterator end(){
+		return iterator(&this->arr[this->size()]);
+	}
 	
 	// const_iterator end() const;
 	
@@ -129,7 +151,10 @@ public:
 		return (this->Capacity);
 	}
 	
-	bool empty() const;
+	bool empty() const
+	{
+		return(this->size());
+	}
 	
 	void reserve(size_type n);
 	// element access:
