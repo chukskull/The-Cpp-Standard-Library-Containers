@@ -3,20 +3,25 @@
 
 
 
-int main()
-{
-    int d = 19;
-    int p = 0;
+#include <iostream>
 
-    if (d >= 0)
-        while(d--)
-        {
-            ++p;
-            write(1, "c", 1);   
-        }
-    else
-        while(d++)
-            --p;
-    printf("%d\n", p);
-    return 0;
+// enable_if example: two ways of using enable_if
+#include <iostream>
+#include <type_traits>
+
+// 1. the return type (bool) is only valid if T is an integral type:
+template <class T>
+typename std::enable_if<std::is_integral<T>::value,bool>::type
+  is_odd (T i) {return bool(i%2);}
+
+// 2. the second template argument is only valid if T is an integral type:
+
+int main() {
+
+  short int i = 1;    // code does not compile if type of i is not integral
+
+  std::cout << std::boolalpha;
+  std::cout << "i is odd: " << is_odd(i) << std::endl;
+
+  return 0;
 }

@@ -4,6 +4,7 @@
 
 #include "vector.hpp"
 #include <iostream>
+#include <cmath>
 
 namespace ft {
 
@@ -34,11 +35,11 @@ namespace ft {
 		 class Pointer = T*, class Reference = T&>
 	struct iterator
 	{
-		typedef T         value_type;
-		typedef Distance  difference_type;
-		typedef Pointer   pointer;
-		typedef Reference reference;
-		typedef Category  iterator_category;
+		typedef T         	value_type;
+		typedef Distance  	difference_type;
+		typedef Pointer   	pointer;
+		typedef Reference			reference;
+		typedef Category  	iterator_category;
 	};
 
 template <class T,
@@ -156,7 +157,10 @@ class My_iter
 			this->_iter = store;
 			return	temp;
 		}
-
+		difference_type	operator-(const My_iter &obj)
+		{
+			return (obj.getPointer() - this->getPointer());
+		}
 		reference	operator*(){return *_iter;}
 
 	value_type	operator[](size_t	index)
@@ -227,7 +231,7 @@ class My_iter
 	template<class iter>
 	typename ft::iterator_traits<iter>::difference_type	 TheDistance(iter first, iter last)
 		{
-			return disc::TheDistance_(first, last, ft::iterator_traits<iter>::iterator_category());
+			return disc::TheDistance_(first, last, typename ft::iterator_traits<iter>::iterator_category());
 		}
 
 

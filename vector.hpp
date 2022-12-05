@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2022/12/03 17:54:35 by snagat           ###   ########.fr       */
+/*   Updated: 2022/12/05 13:53:23 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <vector>
 #include <iterator>
 #include "random_iter.hpp"
+#include <type_traits>
 
 namespace ft {
 template <class T, class Allocator = std::allocator<T> >
@@ -24,7 +25,13 @@ class vector {
 
 public:
 // types:
-
+	template<bool B, class Tp = void>
+	struct enable_if {};
+	
+	template<class Tp>
+	struct enable_if<true, Tp> { typedef Tp type; };
+	
+	
 	typedef T value_type;
 	typedef typename Allocator::reference reference;
 	
@@ -64,23 +71,21 @@ public:
 		this->Size = n;
 		this->Capacity = n;
 	}
-	template <class InputIterator>
-	vector(InputIterator first, InputIterator last,
+	template<class InputIterator>
+  	vector(typename enable_if<!std::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last,
 	const Allocator& = Allocator())
 	{
 		difference_type	length;
 
 		length = TheDistance(first, last);
-		this->arr = _alloc.allocate(length);
+		this->arr = _alloc.allocate(abs(length));
 		for(int i = 0; i < length; i++)
 		{
 			this->_alloc.construct(&arr[i], *first);
 			first++;
 		}
-		this->Size = length;
-		this->Capacity = length;
-		
-		
+		this->Size = abs(length);
+		this->Capacity = abs(length);
 	}
 	
 	vector(const vector<T,Allocator>& x)
