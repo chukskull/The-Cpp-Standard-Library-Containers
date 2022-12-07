@@ -59,6 +59,10 @@ class My_iter
 		{
 
 		}
+		My_iter()
+		{
+
+		}
 
 		My_iter(const	My_iter &other)
 		{
@@ -212,7 +216,7 @@ class My_iter
 		{
 			typename ft::iterator_traits<iter>::difference_type result;
 			result = last - first;
-			return	result;
+			return	abs(result);
 		}
 		template <class iter>
 		typename ft::iterator_traits<iter>::difference_type

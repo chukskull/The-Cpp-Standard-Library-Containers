@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2022/12/05 13:53:23 by snagat           ###   ########.fr       */
+/*   Updated: 2022/12/07 16:45:02 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <iterator>
 #include "random_iter.hpp"
 #include <type_traits>
+#include <algorithm>
 
 namespace ft {
 template <class T, class Allocator = std::allocator<T> >
@@ -55,7 +56,7 @@ public:
 	
 	explicit vector(const Allocator& alloc = Allocator())
 	{
-		this->arr = get_allocator().allocate(1);
+		this->arr = NULL;
 		this->Capacity = 0;
 		this->Size = 0;
 	}
@@ -105,13 +106,58 @@ public:
 		{
 			_alloc.destroy(&arr[i]);
 		}
-		_alloc.deallocate(arr, this->size());
+		_alloc.deallocate(arr, this->capacity());
 	}
 	vector<T,Allocator>& operator=(const vector<T,Allocator>& x);
 	
 	template <class InputIterator>
-	void assign(InputIterator first, InputIterator last);
-	void assign(size_type n, const T& u);
+	void assign(typename enable_if<!std::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
+	{
+		size_type	tmp;
+		size_type	old_cap;
+
+		tmp = this->Size;
+		difference_type	distanc_;
+
+		distanc_ = TheDistance(first, last);
+		if (capacity() < distanc_)
+		{
+			this->Capacity = distanc_;
+		}
+		this->Size = distanc_;
+		for (size_t i = 0; i < tmp; i++)
+		{
+			this->_alloc.destroy(&arr[i]);
+		}
+		_alloc.deallocate(arr,old_cap);
+		arr = _alloc.allocate(distanc_);
+		for (size_t i = 0; i < size(); i++)
+		{
+			this->_alloc.construct(&arr[i], *first);
+			first++;
+		}	
+	}
+	void assign(size_type n, const T& u)
+	{
+		size_type	tmp;
+		size_type	old_cap;
+
+		old_cap = capacity();
+		tmp = this->Size;
+		if (capacity() < n)
+			this->Capacity = n;
+		this->Size = n;
+		for (size_t i; i < tmp; i++)
+		{
+			_alloc.destroy(&arr[i]);
+		}
+		_alloc.deallocate(arr, old_cap);
+		arr = _alloc.allocate(capacity());
+		for (size_t i = 0; i < size(); i++)
+		{
+			_alloc.construct(&arr[i], u);
+		}
+	}
 	
 	allocator_type get_allocator() const
 	{
@@ -147,9 +193,28 @@ public:
 		return (this->Size);
 	}
 	
-	size_type max_size() const;
+	size_type max_size() const
+	{
+		return std::numeric_limits<std::size_t>::max();
+	}
 	
-	void resize(size_type sz, T c = T());
+	// void resize(size_type sz, T c = T())
+	// {
+	// 	if (sz > capacity())
+	// 	{
+	// 		Allocator	new_arr;
+	// 		arr = new_arr.allocate(sz);
+	// 		std::copy(begin(), end(), begin());
+	// 		_alloc.deallocate(arr, size());
+	// 		for (int i = 0; i < size(); i++)
+	// 		{
+	// 			_alloc.destroy(&arr[i]);
+	// 		}
+	// 		// arr = new_arr;
+	// 		Capacity = sz;
+	// 	}
+	// 	Size = sz;
+	// }
 	
 	size_type capacity() const
 	{
@@ -161,25 +226,66 @@ public:
 		return(this->size());
 	}
 	
-	void reserve(size_type n);
+	void reserve(size_type n){
+		_alloc.deallocate(size());
+		_alloc.allocate(n);
+	}
 	// element access:
-	reference operator[](size_type n);
+	reference operator[](size_type n){
+		return (this->arr[n]);
+	}
 	
 	const_reference operator[](size_type n) const;
 	
 	const_reference at(size_type n) const;
 	
-	reference at(size_type n);
+	reference at(size_type n){
+		if (n >= this->size())
+			throw std::out_of_range("out of range");
+		return (this->arr[n]);
+	}
 	
-	reference front();
+	reference front()
+	{
+		return (this->arr[0]);
+	}
 	
 	const_reference front() const;
 	
-	reference back();
+	reference back()
+	{
+		return (this->arr[this->size() -1]);	
+	}
 	
 	const_reference back() const;
 	// 23.2.4.3 modifiers:
-	void push_back(const T& x);
+	void push_back(const T& x)
+	{
+		if (capacity() == 0)
+		{
+			this->Capacity = 1;
+			this->arr = _alloc.allocate(1);
+
+		}
+		if (size() == capacity())
+		{
+			this->Capacity = this->Capacity * 2;
+			value_type		*temp;
+			temp = arr;
+			arr = _alloc.allocate(capacity());
+			for(int i = 0; i < size(); i++)
+			{
+				_alloc.construct(&arr[i], temp[i]);
+			}
+			for (size_t i = 0; i < size(); i++)
+			{
+				_alloc.destroy(&temp[i]);
+			}
+			_alloc.deallocate(temp, this->capacity());
+		}
+		_alloc.construct(&arr[this->size()], x);
+		this->Size++;
+	}
 	void pop_back();
 	
 	// iterator insert(iterator position, const T& x);
