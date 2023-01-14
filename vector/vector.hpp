@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+ /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   vector.hpp                                         :+:      :+:    :+:   */
@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/01/10 14:19:28 by snagat           ###   ########.fr       */
+/*   Updated: 2023/01/13 15:30:46 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ public:
 
 		length = TheDistance(first, last);
 		this->arr = _alloc.allocate(abs(length));
-		for(int i = 0; i < length; i++)
+		for(size_t i = 0; i < length; i++)
 		{
 			this->_alloc.construct(&arr[i], *first);
 			first++;
@@ -115,6 +115,7 @@ public:
 		size_type	old_cap;
 
 		tmp = this->Size;
+		old_cap = this->Capacity;
 		difference_type	distanc_;
 
 		distanc_ = TheDistance(first, last);
@@ -127,7 +128,7 @@ public:
 		{
 			this->_alloc.destroy(&arr[i]);
 		}
-		_alloc.deallocate(arr,old_cap);
+		_alloc.deallocate(arr, old_cap);
 		arr = _alloc.allocate(distanc_);
 		for (size_t i = 0; i < size(); i++)
 		{
@@ -135,6 +136,7 @@ public:
 			first++;
 		}	
 	}
+	
 	void assign(size_type n, const T& u)
 	{
 		size_type	tmp;
@@ -196,23 +198,47 @@ public:
 		return std::numeric_limits<std::size_t>::max();
 	}
 	
-	// void resize(size_type sz, T c = T())
-	// {
-	// 	if (sz > capacity())
-	// 	{
-	// 		Allocator	new_arr;
-	// 		arr = new_arr.allocate(sz);
-	// 		std::copy(begin(), end(), begin());
-	// 		_alloc.deallocate(arr, size());
-	// 		for (int i = 0; i < size(); i++)
-	// 		{
-	// 			_alloc.destroy(&arr[i]);
-	// 		}
-	// 		// arr = new_arr;
-	// 		Capacity = sz;
-	// 	}
-	// 	Size = sz;
-	// }
+	void resize(size_type sz, T c = T())
+	{
+		if (sz < size())
+		{
+			for (int i = sz - 1; i < size(); i++)
+			{
+				_alloc.destroy(&arr[i]);
+			}
+			this->Size = sz;
+		}
+		else if (sz < capacity() && sz > size())
+		{
+			for(int i = size() - 1; i < sz; i++)
+			{
+				if ( i >= sz )
+				{
+					_alloc.construct(&arr[i], c);
+				}
+			}
+			this->Size = sz;
+		}
+		else if (sz > capacity())
+		{
+			value_type	*tmp = arr;
+			arr = _alloc.allocate(sz);
+			for(int i = 0; i < sz; i++)
+			{
+				if (i >= size())
+				{
+					_alloc.construct(&arr[i], c);
+				}
+				else
+					_alloc.construct(&arr[i], tmp[i]);
+			}
+			// arr = new_arr;
+			_alloc.deallocate(tmp, size());
+			Capacity = sz;
+			Size = sz;
+		}
+		// Size = sz;
+	}
 	
 	size_type capacity() const
 	{
@@ -225,8 +251,18 @@ public:
 	}
 	
 	void reserve(size_type n){
-		_alloc.deallocate(size());
-		_alloc.allocate(n);
+		if (n < size())
+			return ;
+		value_type	*tmp = arr;
+
+		arr = _alloc.allocate(n);
+		for(int i = 0 ; i < size(); i++)
+		{
+			_alloc.destroy(&arr[i]);
+			_alloc.construct(&arr[i], tmp[i]);
+		}
+		_alloc.deallocate(tmp, size());
+		this->Capacity = n;
 	}
 	// element access:
 	reference operator[](size_type n){
@@ -291,36 +327,107 @@ public:
 	
 	iterator insert(iterator position, const T& x)
 	{
-		if (capacity() == 0)
+		int  count = 0;
+		iterator	it = this->begin();
+		while( it != position)
 		{
-			this->Capacity = 1;
-			this->arr = _alloc.allocate(1);
-
+			// std::cerr << " maybe here" << '\n';
+			count++;
+			it++;
 		}
-		if (size() == capacity())
+		resize(size() + 1);
+		int i = size() - 1; 
+		while(i > count)
 		{
-			this->Capacity = this->Capacity * 2;
-			value_type		*temp;
-			iterator		iter = this->begin();
-			temp = arr;
-			int		i;
-			i = 0;
-			arr = _alloc.allocate(capacity());
-			this->Size++;
-			while (iter < this->end())
-			{
-				_alloc.construct(&arr[i], *iter);
-				iter++;
-				/* code */
-			}
-			
-			for (size_t i = 0; i < size(); i++)
-			{
-				_alloc.destroy(&temp[i]);
-			}
-			_alloc.deallocate(temp, this->capacity());
+			arr[i] = arr[i - 1];
+			i--;
+		}
+		iterator lol = iterator(&arr[i]);
+		arr[i] = x;
+		return lol;
+		// resize()
+	}
+	void	insert(iterator position, size_type n, const value_type& val)
+	{;
+		int count = 0;
+		iterator	iter = this->begin();
+		while(iter != position)
+		{
+			count++;
+			iter++;
+		}
+		resize(size() + n);
+		int s = size() - 1;
+		std::cerr << count << std::endl;
+		while (s > count)
+		{
+			arr[s] = arr[s - n];
+			s--;
+		}
+		int count_2 = 0;
+		while (count_2 < n)
+		{
+			arr[s] = val;
+			count_2++;
+			s++;
 		}
 	}
+	template<class InputIterator>
+	void	insert(iterator position, typename enable_if<!std::is_integral<InputIterator>::value , InputIterator>::type first, InputIterator last)
+	{
+		int count = 0;
+		iterator	iter = this->begin();
+		while(iter != position)
+		{
+			count++;
+			iter++;
+		}
+		difference_type distance = abs(TheDistance(first, last));
+		resize(size() + distance);
+		int s = size() - 1;
+		while (s > count)
+		{
+			arr[s] = arr[s - distance];
+			s--;
+		}
+		int count_2 = 0;
+		while (count_2 < distance)
+		{
+			arr[s] = *first;
+			count_2++;
+			s++;
+			first++;
+		}
+	}
+		// if (capacity() == 0)
+		// {
+		// 	this->Capacity = 1;
+		// 	this->arr = _alloc.allocate(1);
+
+		// }
+		// if (size() == capacity())
+		// {
+		// 	this->Capacity = this->Capacity * 2;
+		// 	value_type		*temp;
+		// 	iterator		iter = this->begin();
+		// 	temp = arr;
+		// 	int		i;
+		// 	i = 0;
+		// 	arr = _alloc.allocate(capacity());
+		// 	this->Size++;
+		// 	while (iter < this->end())
+		// 	{
+		// 		_alloc.construct(&arr[i], *iter);
+		// 		iter++;
+		// 		/* code */
+		// 	}
+			
+		// 	for (size_t i = 0; i < size(); i++)
+		// 	{
+		// 		_alloc.destroy(&temp[i]);
+		// 	}
+		// 	_alloc.deallocate(temp, this->capacity());
+		// }
 	
 	// void insert(iterator position, size_type n, const T& x);
 	
