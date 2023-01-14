@@ -6,7 +6,6 @@ int main ()
 {
   ft::vector<int> myvector (3,100);
   ft::vector<int>::iterator it;
-
   it = myvector.begin();
   it = myvector.insert ( it , 200 );
 

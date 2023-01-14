@@ -331,12 +331,15 @@ public:
 		iterator	it = this->begin();
 		while( it != position)
 		{
-			// std::cerr << " maybe here" << '\n';
 			count++;
 			it++;
 		}
-		resize(size() + 1);
-		int i = size() - 1; 
+		int i = 0;
+		if (size() <= capacity())
+			resize(size() + 1);
+		else
+			this->Size++;
+		i = size() - 1;
 		while(i > count)
 		{
 			arr[i] = arr[i - 1];
@@ -345,10 +348,11 @@ public:
 		iterator lol = iterator(&arr[i]);
 		arr[i] = x;
 		return lol;
+
 		// resize()
 	}
 	void	insert(iterator position, size_type n, const value_type& val)
-	{;
+	{
 		int count = 0;
 		iterator	iter = this->begin();
 		while(iter != position)
@@ -356,9 +360,12 @@ public:
 			count++;
 			iter++;
 		}
-		resize(size() + n);
-		int s = size() - 1;
-		std::cerr << count << std::endl;
+		int s = 0;
+		if (size() + n <= capacity())
+			resize(size() + n);
+		else
+			this->Size += n;
+		s = size() -1;
 		while (s > count)
 		{
 			arr[s] = arr[s - n];
@@ -383,8 +390,12 @@ public:
 			iter++;
 		}
 		difference_type distance = abs(TheDistance(first, last));
-		resize(size() + distance);
-		int s = size() - 1;
+		int	s = 0;
+		if (size() + distance <= capacity())
+			resize(size() + distance);
+		else
+			this->Size += distance;
+		s = size() - 1;
 		while (s > count)
 		{
 			arr[s] = arr[s - distance];
