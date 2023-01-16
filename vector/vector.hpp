@@ -39,18 +39,15 @@ public:
 	
 	typedef size_t          			size_type;
 	typedef My_iter<value_type>			iterator;
-	// typedef implementation defined iterator; 
-	// typedef implementation defined const_iterator; 
-	// typedef implementation defined size_type;
+	typedef	My_iter<const value_type>	const_iterator;
 	typedef typename	My_iter<value_type>::difference_type	difference_type;
-	
 	typedef Allocator allocator_type;
 	
 	typedef typename Allocator::const_pointer const_pointer;
 	
-	// typedef std::reverse_iterator<iterator> reverse_iterator;
+	typedef ft::reverse_iterator<iterator> reverse_iterator;
 	
-	// typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 	
 	explicit vector(const Allocator& alloc = Allocator())
 	{
@@ -171,22 +168,50 @@ public:
 	iterator begin(){
 		return iterator(&this->arr[0]);
 	}
+	// reverse_iterator	rbegin()
+	// {
+	// 	return reverse_iterator(&this->arr[size()]);
+	// }
+
+	reverse_iterator	rend()
+	{
+		return reverse_iterator(&this->arr[0]);
+	}
 	
-	// const_iterator begin() const;
+	const_iterator begin() const
+	{
+		return const_iterator(&this->att[0]);
+	}
 	
 	iterator end(){
 		return iterator(&this->arr[this->size()]);
 	}
 	
-	// const_iterator end() const;
+	const_iterator end() const
+	{
+		return const_iterator(&this->arr[size()]);
+	}
 	
-	// reverse_iterator rbegin();
+	reverse_iterator rbegin()
+	{
+		return reverse_iterator(&this->arr[size()]);
+	}
 	
-	// const_reverse_iterator rbegin() const;
+	const_reverse_iterator rbegin() const
+	{
+		return const_reverse_iterator(&this->arr[size()]);
+	}
 	
-	// reverse_iterator rend();
+	// reverse_iterator rend()
+	// {
+	// 	return reverse_iterator(&this->arr[size()]);
+	// }
+		
 	
-	// const_reverse_iterator rend() const;
+	const_reverse_iterator rend() const
+	{
+		return const_reverse_iterator(&this->arr[0]);
+	}
 	// 23.2.4.2 capacity:
 	size_type size() const
 	{
@@ -195,7 +220,7 @@ public:
 	
 	size_type max_size() const
 	{
-		return std::numeric_limits<std::size_t>::max();
+		return this->_alloc.max_size();
 	}
 	
 	void resize(size_type sz, T c = T())
@@ -410,6 +435,50 @@ public:
 			first++;
 		}
 	}
+	iterator	erase(iterator position)
+	{
+		int count = 0;
+		iterator	it = this->begin();
+		while(it != position)
+		{
+			count++;
+			it++;
+		}
+		resize(size() - 1);
+		while(count < size())
+		{
+			arr[count] = arr[count + 1];
+			count++;
+		}
+		return it;
+	}
+	iterator	erase(iterator	first, iterator	last)
+	{
+		int count = 0;
+		difference_type	d = abs(TheDistance(last, first));
+		iterator	it = this->begin();
+		while(it != first)
+		{
+			count++;
+			it++;
+		}
+		resize(size() - d);
+		while(count < size())
+		{
+			arr[count] = arr[count + d];
+			count++;
+		}
+		return it;
+	}
+	void	clear()
+	{
+		for(int i = 0; i < size(); i++)
+		{
+			_alloc.destroy(&arr[i]);
+		}
+		this->Size = 0;
+	}
+
 		// if (capacity() == 0)
 		// {
 		// 	this->Capacity = 1;
@@ -450,8 +519,6 @@ public:
 	// iterator erase(iterator first, iterator last);
 	
 	void swap(vector<T,Allocator>&);
-	
-	void clear();
 private:
 	value_type			*arr;
 	size_type			Capacity;
