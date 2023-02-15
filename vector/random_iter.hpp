@@ -4,6 +4,7 @@
 
 #include "vector.hpp"
 #include <iostream>
+#include <map>
 #include <cmath>
 
 namespace ft {
@@ -68,7 +69,10 @@ class My_iter
 		{
 			this->_iter = other._iter;
 		}
-
+		operator My_iter<const T>() const 
+		{
+        	return My_iter<const	T>(_iter);
+    	}
 		My_iter	&operator=(const My_iter &rhs)
 		{
 			if (this != &rhs)

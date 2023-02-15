@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/12 15:56:55 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/14 14:31:48 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ public:
 	
 	typedef typename Allocator::const_reference const_reference;
 	typedef typename Allocator::pointer     pointer;
+	typedef typename Allocator::const_pointer     const_pointer;
 	
 	typedef size_t          			size_type;
 	typedef My_iter<value_type>			iterator;
@@ -43,12 +44,10 @@ public:
 	typedef typename	My_iter<value_type>::difference_type	difference_type;
 	typedef Allocator allocator_type;
 	
-	typedef typename Allocator::const_pointer const_pointer;
 	
 	typedef ft::reverse_iterator<iterator> reverse_iterator;
 	
 	typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-	
 	explicit vector(const Allocator& alloc = Allocator())
 	{
 		this->arr = NULL;

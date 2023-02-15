@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/13 11:08:01 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/15 11:05:55 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@
 #include <iostream>
 #include "pair.hpp"
 #include "less.hpp"
+#include "RBT.hpp"
 
 namespace ft
 {
-    template <class Key, class T, class Compare = ft::less<Key>,
+    template <class Key, class T, class Compare = std::less<Key>,
             class Allocator = std::allocator<ft::pair<const Key, T> > >
 
     class map
@@ -132,6 +133,9 @@ namespace ft
             equal_range(const key_type& x);
             pair<const_iterator,const_iterator>
             equal_range(const key_type& x) const;
+        protected:
+            allocator_type      alloc;
+            Tree<T>             tree_;
 
         };
         template <class Key, class T, class Compare, class Allocator>
