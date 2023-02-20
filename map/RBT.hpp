@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/15 11:57:04 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/20 20:18:47 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,36 +15,99 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include "pair.hpp"
 #include "map.hpp"
+#include "pair.hpp"
+#include "bider_iterator.hpp"
 
 #define RED 1
 #define BLCK 0
 #define COUNT 10
+ namespace ft{
 
-template<class T, class Compare, class Allocator = std::allocator<T> >
+ 
+template<class T, class Compare,class key_type, class Allocator>
 class Tree
 {
 	public:  
 		struct Node
 		{
-			T       data_;
-			Node    *parent;
-			Node    *left;
-			Node    *right;
-			int     color;
+			T       	*data_;
+			Node*		parent;
+			Node*		left;
+			Node*		right;
+			int     	color;
+			Node*		_next;
+			Node*		_prev;
 		};
-		typedef Allocator std::allocator<Node>;
-		Tree():root(naher_nill)
+		typedef Node*			node_ptr;
+		typedef Compare			value_compare;
+		typedef typename		std::allocator<Node>		Allocator_;
+		typedef	typename		ft::map_iterator<T, node_ptr>	iterator;
+		typedef typename		ft::map_iterator<const T, node_ptr>	const_iterator;
+		Tree()
 		{
-			this->color = BLCK;
+			this->naher_nill = _alloc.allocate(1);
+			naher_nill->color = BLCK;
+			this->size_ = 0;
+		}
+		Tree(const value_compare &comp):_comp(comp)
+		{
+			this->naher_nill = _alloc.allocate(1);
+			this->root = naher_nill;
+			// _comp = comp;
+			naher_nill->color = BLCK;
 		}
 		// constructor to initialize data_ and pointers
-		Tree(T data) : data_(data){};
-		
+		// Tree(T *data) : data_(data){};
+		Tree(const Tree	&x)
+		{
+			if (this != &x)
+			{
+				this->root = x.root;
+				_comp(x._comp);
+				this->_alloc = x._alloc;
+				this->naher_nill = x.naher_nill;
+				naher_nill->color = BLCK;
+			}
+		}
+
+		node_ptr	successor(node_ptr	node)
+		{
+			if(node->right != naher_nill)
+				return minimum(node->right);
+			else
+			{
+				node_ptr	p;
+				p = node->parent; // 2
+				if(p != naher_nill && p->right == node)
+				{
+					node = p;//node hiya 2
+					p = p->parent;//p d p is 4
+				}
+				return p;
+			}
+		}
+
+		node_ptr	predecessor(node_ptr	node)
+		{
+			if(node->left != naher_nill)
+			{
+				return	maximum(node->left);
+			}
+			else
+			{
+				node_ptr	p;
+				if (p != naher_nill && p->left == node)
+				{
+					node = p;
+					p = p->parent;
+				}
+				return p;
+			}
+		}
 		void    left_rotate(Node *x)
 		{
-			Node    *y = x->right;
+			node_ptr	y = x->right;
 
 			x->right = y->left;
 			if (y->left != naher_nill)
@@ -62,9 +125,9 @@ class Tree
 
 		void    right_rotate(Node *x)
 		{
-			Node    *y = x->left;
+			node_ptr	y = x->left;
 
-			cerr <<"this is the data" <<x->data_ << endl;
+			// cerr <<"this is the data" <<x->data_ << endl;
 			x->left = y->right;
 			if (y->right != naher_nill)
 				y->right->parent = x;
@@ -80,7 +143,7 @@ class Tree
 
 		}
 
-		void    transpant_algo(Node    *u, Node    *v)
+		void    transpant_algo(node_ptr	u, node_ptr	v)
 		{
 			if (u->parent == naher_nill)
 				root = v;
@@ -91,9 +154,9 @@ class Tree
 			v->parent = u->parent;
 		}
 
-		Node    *minimum()
+		node_ptr	minimum(Node	*p)
 		{
-			Node    *current = root;
+			node_ptr	current = p;
 
 			while(current->left != naher_nill)
 			{
@@ -108,7 +171,7 @@ class Tree
 			{
 				if(x == x->parent->left)
 				{
-					Node    *w = x->parent->right;
+					node_ptr	w = x->parent->right;
 					if (w->color == RED)
 					{
 						w->color = BLCK;
@@ -140,10 +203,10 @@ class Tree
 				}
 				else
 				{
-					Node    *w = x->parent->left;
+					node_ptr	w = x->parent->left;
 					if (w->color == RED)
 					{
-						cerr << "this is w" << w->data_ << endl;
+						// cerr << "this is w" << w->data_ << endl;
 						w->color = BLCK;
 						x->parent->color = RED;
 						right_rotate(x->parent);
@@ -166,7 +229,7 @@ class Tree
 						w->color = x->parent->color;
 						x->parent->color = BLCK;
 						w->left->color = BLCK;
-						cerr << "l iks " << x->data_ << endl;
+						// cerr << "l iks " << x->data_ << endl;
 						right_rotate(x->parent);
 						x = root;
 					}
@@ -175,7 +238,7 @@ class Tree
 			x->color = BLCK;
 		}
 
-		Node    *search_node(T key)
+		node_ptr	search_node(T key)
 		{
 		   Node *curr = root;
 			while(curr != naher_nill && key != curr->data_)
@@ -188,9 +251,9 @@ class Tree
 			return curr;
 		}
 
-		Node   *maximum()
+		Node   *maximum(node_ptr nax)
 		{
-			Node   *curr = root;
+			node_ptr	curr = nax;
 			while(curr->right != naher_nill)
 			{
 				curr = curr->right;
@@ -202,8 +265,8 @@ class Tree
 
 		void    delete_(T key)
 		{
-			Node    *y;
-			Node    *x;
+			node_ptr	y;
+			node_ptr	x;
 			int     color;
 
 			Node *z = search_node(key);
@@ -220,7 +283,7 @@ class Tree
 				transpant_algo(z, z->left);
 			}
 			else{
-				Node    *y = minimum(z->right);
+				node_ptr	y = minimum(z->right);
 				color = y->color;
 				x = y->right;
 				if (y->parent == z)
@@ -240,7 +303,9 @@ class Tree
 			{
 				RB_deletion_Fixup(x);
 			}
+			_alloc.destroy(z);
 			_alloc.deallocate(z);
+			this->size_--;
 			// delete z;
 		}
 		//case 1: if uncle is red we are just recoloring the parent and uncle as a BLCK and grand parent as black and set elem to grand_parent because his red xD
@@ -250,7 +315,7 @@ class Tree
 			{
 				if (new_elem->parent == new_elem->parent->parent->left)
 				{
-					Node    *y = new_elem->parent->parent->right;
+					node_ptr	y = new_elem->parent->parent->right;
 					if (y && y->color == RED)
 					{
 						new_elem->parent->color = BLCK;
@@ -272,7 +337,7 @@ class Tree
 				}
 				else
 				{
-					Node    *y = new_elem->parent->parent->left;
+					node_ptr	y = new_elem->parent->parent->left;
 					if (y && y->color == RED)
 					{
 						new_elem->parent->color = BLCK;
@@ -298,14 +363,20 @@ class Tree
 			root->color = BLCK;
 		}
 
-		void    insert(Node *new_ele)
+		iterator    insert(const T	 data)
 		{
-			Node    *y = naher_nill;
-			Node    *tmp = root;
+			//
+			this->size_++;
+			node_ptr	y = naher_nill;
+			node_ptr	tmp = root;
+			Node	*new_ele = _alloc.allocate(1);
+			data_alloc.construct(new_ele->data_, data);
+			_alloc.construct(new_ele, Node());
+			new_ele->data_ = data_alloc.allocate(1);
 			while(tmp != naher_nill)
 			{
 				y = tmp;
-				if (_comp(new_ele->data_, tmp->data_))
+				if (_comp(*(new_ele->data_), *(tmp->data_)))
 				{
 					tmp = tmp->left;
 				}
@@ -313,9 +384,15 @@ class Tree
 					tmp = tmp->right;
 			}
 			new_ele->parent = y;
+			new_ele->_prev = predecessor(new_ele);
+            new_ele->_next = successor(new_ele);
+            new_ele->_prev->_next = new_ele;
+            new_ele->_next->_prev = new_ele;
+            this->naher_nill->_prev = maximum(this->root);
+            this->naher_nill->_next = nullptr;
 			if (y == naher_nill)
 				root = new_ele;
-			else if(_comp(new_ele->data_ , y->data_))
+			else if(_comp(*(new_ele->data_) , *(y->data_)))
 				y->left = new_ele;
 			else
 				y->right = new_ele;
@@ -323,16 +400,67 @@ class Tree
 			new_ele->right = naher_nill;
 			new_ele->color = RED;
 			RB_insert_Fixup(new_ele);
+			return iterator(new_ele);
 		}
-	private:
-		Allocator			_alloc;
-		Node                *&root;
-		Node                *naher_nill = _alloc.allocate(1);
-		Compare				_comp;
+		template<class iterator>
+		void	insert_iterator(iterator first, iterator last)
+		{
+			for(; first != last; first++)
+			{
+				this->insert(*first);
+			}
+		}
+		template<class iterator>
+		void	erase_iterators(iterator first, iterator last)
+		{
+			iterator temp = first;
+           for(; first != last;)
+		   {
+				temp++;
+				delete_(first->first);
+				first = temp;
+		   }
+		}
+		node_ptr	get_value_begin()const
+		{
+			return this->root;
+		}
+		node_ptr	get_value_end()const
+		{
+			node_ptr	temp = this->naher_nill;
+			temp--;
+			return temp;
+		}
+		size_t	size()const
+		{
+			return this->size_;
+		}
 
-};
+		iterator	find_pair(const	key_type &key)const
+		{
+			node_ptr	curr = this->root;
+			for(;curr && curr != naher_nill;)
+			{
+				if (curr->data_->first == key)
+					return iterator(curr);
+				if (key < curr->data_->first)
+					curr = curr->left;
+				else
+					curr = curr->right;
+			}
+			return iterator(this->naher_nill);
+		}
+	protected:
+		size_t				size_;
+		Allocator_			_alloc;
+		Allocator			data_alloc;
+		node_ptr			root;
+		node_ptr 			naher_nill;
+		value_compare		_comp;
 
+	};
 
+ }
 
 // void print2DUtil(Tree * root, int space)
 // {
