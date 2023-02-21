@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/20 20:18:47 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/21 17:59:29 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,28 @@ class Tree
 		Tree()
 		{
 			this->naher_nill = _alloc.allocate(1);
+			_alloc.construct(this->naher_nill, Node());
 			naher_nill->color = BLCK;
+			naher_nill->parent = nullptr;
+			naher_nill->left = nullptr;
+			naher_nill->right = nullptr;
+			naher_nill->_next = nullptr;
+			naher_nill->_prev = nullptr;
+			this->root = naher_nill;
 			this->size_ = 0;
 		}
 		Tree(const value_compare &comp):_comp(comp)
 		{
 			this->naher_nill = _alloc.allocate(1);
+			_alloc.construct(this->naher_nill, Node());
 			this->root = naher_nill;
 			// _comp = comp;
 			naher_nill->color = BLCK;
+			naher_nill->parent = nullptr;
+			naher_nill->left = nullptr;
+			naher_nill->right = nullptr;
+			naher_nill->_next = nullptr;
+			naher_nill->_prev = nullptr;
 		}
 		// constructor to initialize data_ and pointers
 		// Tree(T *data) : data_(data){};
@@ -96,7 +109,7 @@ class Tree
 			}
 			else
 			{
-				node_ptr	p;
+				node_ptr	p = node->parent;
 				if (p != naher_nill && p->left == node)
 				{
 					node = p;
@@ -154,7 +167,7 @@ class Tree
 			v->parent = u->parent;
 		}
 
-		node_ptr	minimum(Node	*p)
+		node_ptr	minimum(node_ptr	p) const
 		{
 			node_ptr	current = p;
 
@@ -238,12 +251,12 @@ class Tree
 			x->color = BLCK;
 		}
 
-		node_ptr	search_node(T key)
+		node_ptr	search_node(key_type key)
 		{
 		   Node *curr = root;
-			while(curr != naher_nill && key != curr->data_)
+			while(curr != naher_nill && key != curr->data_->first)
 			{
-				if (_comp(key , curr->data_))
+				if (key < curr->data_->first)
 					curr = curr->left;
 				else
 					curr = curr->right;
@@ -263,53 +276,7 @@ class Tree
 
 
 
-		void    delete_(T key)
-		{
-			node_ptr	y;
-			node_ptr	x;
-			int     color;
-
-			Node *z = search_node(key);
-			y = z;
-			color = y->color;
-			if(z->left == naher_nill)
-			{
-				x = z->right;
-				transpant_algo(z, z->right);
-			}
-			else if (z->right == naher_nill)
-			{
-				x = z->left;
-				transpant_algo(z, z->left);
-			}
-			else{
-				node_ptr	y = minimum(z->right);
-				color = y->color;
-				x = y->right;
-				if (y->parent == z)
-					x->parent = y;
-				else
-				{
-					transpant_algo(y, y->right);
-					y->right = z->right;
-					y->right->parent = y; 
-				}
-				transpant_algo(z, y);
-				y->left = z->left;
-				y->left->parent = y;
-				y->color = z->color;
-			}
-			if (color == BLCK)
-			{
-				RB_deletion_Fixup(x);
-			}
-			_alloc.destroy(z);
-			_alloc.deallocate(z);
-			this->size_--;
-			// delete z;
-		}
-		//case 1: if uncle is red we are just recoloring the parent and uncle as a BLCK and grand parent as black and set elem to grand_parent because his red xD
-		void    RB_insert_Fixup(Node *new_elem)
+		void    RB_insert_Fixup(node_ptr new_elem)
 		{
 			while(new_elem->parent->color == RED)
 			{
@@ -362,17 +329,67 @@ class Tree
 			}
 			root->color = BLCK;
 		}
+		void    delete_(key_type key)
+		{
+			node_ptr	y;
+			node_ptr	x;
+			int     color;
+
+			node_ptr	z = search_node(key);
+			z->_prev->_next = z->_next;
+			z->_next->_prev = z->_prev;
+			y = z;
+			color = y->color;
+			if(z->left == naher_nill)
+			{
+				x = z->right;
+				transpant_algo(z, z->right);
+			}
+			else if (z->right == naher_nill)
+			{
+				x = z->left;
+				transpant_algo(z, z->left);
+			}
+			else{
+				node_ptr	y = minimum(z->right);
+				color = y->color;
+				x = y->right;
+				if (y->parent == z)
+					x->parent = y;
+				else
+				{
+					transpant_algo(y, y->right);
+					y->right = z->right;
+					y->right->parent = y; 
+				}
+				transpant_algo(z, y);
+				y->left = z->left;
+				y->left->parent = y;
+				y->color = z->color;
+			}
+			if (color == BLCK)
+			{
+				RB_deletion_Fixup(x);
+			}
+			_alloc.destroy(z);
+			_alloc.deallocate(z, 1);
+			z = nullptr;
+			this->size_--;
+			// delete z;
+		}
+		//case 1: if uncle is red we are just recoloring the parent and uncle as a BLCK and grand parent as black and set elem to grand_parent because his red xD
 
 		iterator    insert(const T	 data)
 		{
 			//
-			this->size_++;
 			node_ptr	y = naher_nill;
 			node_ptr	tmp = root;
 			Node	*new_ele = _alloc.allocate(1);
-			data_alloc.construct(new_ele->data_, data);
 			_alloc.construct(new_ele, Node());
 			new_ele->data_ = data_alloc.allocate(1);
+			data_alloc.construct(new_ele->data_, data);
+			new_ele->_next = naher_nill;
+			new_ele->_prev = naher_nill;
 			while(tmp != naher_nill)
 			{
 				y = tmp;
@@ -384,12 +401,6 @@ class Tree
 					tmp = tmp->right;
 			}
 			new_ele->parent = y;
-			new_ele->_prev = predecessor(new_ele);
-            new_ele->_next = successor(new_ele);
-            new_ele->_prev->_next = new_ele;
-            new_ele->_next->_prev = new_ele;
-            this->naher_nill->_prev = maximum(this->root);
-            this->naher_nill->_next = nullptr;
 			if (y == naher_nill)
 				root = new_ele;
 			else if(_comp(*(new_ele->data_) , *(y->data_)))
@@ -398,8 +409,19 @@ class Tree
 				y->right = new_ele;
 			new_ele->left = naher_nill;
 			new_ele->right = naher_nill;
+			new_ele->_prev = predecessor(new_ele);
+            new_ele->_next = successor(new_ele);
+            new_ele->_prev->_next = new_ele;
+            new_ele->_next->_prev = new_ele;
+            this->naher_nill->_prev = maximum(this->root);
+			this->naher_nill->_prev->_next = naher_nill;
+            this->naher_nill->_next = nullptr;
 			new_ele->color = RED;
+			this->size_++;
 			RB_insert_Fixup(new_ele);
+			std::cout << "--------" << std::endl;
+			this->print2D();
+			std::cout << "--------" << std::endl;
 			return iterator(new_ele);
 		}
 		template<class iterator>
@@ -421,15 +443,14 @@ class Tree
 				first = temp;
 		   }
 		}
-		node_ptr	get_value_begin()const
+		iterator	get_value_begin() const
 		{
-			return this->root;
+			node_ptr temp = minimum(this->root);
+			return (iterator(temp));
 		}
 		node_ptr	get_value_end()const
 		{
-			node_ptr	temp = this->naher_nill;
-			temp--;
-			return temp;
+			return naher_nill;
 		}
 		size_t	size()const
 		{
@@ -450,6 +471,41 @@ class Tree
 			}
 			return iterator(this->naher_nill);
 		}
+	void print2DUtil(node_ptr root, int space)
+	{
+		// Base case
+	
+		// Increase distance between levels
+		space += COUNT;
+	
+		if (root == nullptr)
+		{
+			return;
+		}
+		// Process right child first
+		print2DUtil(root->right, space);
+	
+		// Print current node after space
+		// count
+	
+		printf("\n");
+		for (int i = COUNT; i < space; i++)
+			printf(" ");
+		if (root->color == RED)
+			std::cout << "\033[1;31m" << root->data_->first  << "\033[0m" << std::endl;
+		else if (root->color == BLCK && root != naher_nill)
+			std::cerr << "\033[1;34m" << root->data_->first  << "\033[0m" << std::endl;
+		else
+			std::cerr << "nil" << std::endl;
+		print2DUtil(root->left, space);
+	}
+	
+	
+	void print2D()
+	{
+	   // Pass initial space count as 0
+	   print2DUtil(root, 0);
+	}
 	protected:
 		size_t				size_;
 		Allocator_			_alloc;
@@ -462,37 +518,7 @@ class Tree
 
  }
 
-// void print2DUtil(Tree * root, int space)
-// {
-// 	// Base case
-// 	if (root == naher_nill)
-// 		return;
- 
-// 	// Increase distance between levels
-// 	space += COUNT;
- 
-// 	// Process right child first
-// 	print2DUtil(root->right, space);
- 
-// 	// Print current node after space
-// 	// count
- 
-// 	printf("\n");
-// 	for (int i = COUNT; i < space; i++)
-// 		printf(" ");
-// 	if (root->color == RED)
-// 		cout << "\033[1;31m" <<root->data_  << "\033[0m" << endl;
-// 	else
-// 		cerr << "\033[1;34m" <<root->data_  << "\033[0m" << endl;
-// 	print2DUtil(root->left, space);
-// }
 
-
-// void print2D(Tree *root)
-// {
-//    // Pass initial space count as 0
-//    print2DUtil(root, 0);
-// }
 // void    inorder_tree(Tree   *&head)
 // {
 // 	if (head == naher_nill)
@@ -502,7 +528,6 @@ class Tree
 // 	inorder_tree(head->right);
 // 	// delete head;
 // }
-
 
 // Tree    *get_parent(Tree *head, int value)
 // {

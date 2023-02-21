@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/20 20:47:35 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/21 16:47:41 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,17 +93,17 @@ namespace ft
 				return *this;
 			}
 			// iterators:
-			iterator begin()
+			iterator begin() const
 			{
-				return iterator(tree_.get_value_begin());
+				return tree_.get_value_begin();
 			}
 
-			const_iterator begin() const;
+			// const_iterator begin() const;
 
 			iterator end()
 			{
 				return iterator(tree_.get_value_end());
-			};
+			}
 
 			const_iterator end() const;
 
@@ -124,7 +124,7 @@ namespace ft
 
 			size_type size() const
 			{
-				return this->tree_->size();
+				return this->tree_.size();
 			}
 
 			size_type max_size() const
@@ -146,7 +146,9 @@ namespace ft
 				iterator	new_one = find(x.first);
 				if (new_one == this->end())
 				{
+					std::cout << " lol " << std::endl;
 					return ft::make_pair(tree_.insert(x), true);
+	
 				}
 				return	ft::make_pair(new_one, false);
 			}
@@ -174,10 +176,10 @@ namespace ft
 			}
 			size_type erase(const key_type& x)
 			{
-				iterator	find = find(x);
+				iterator	find = this->find(x);
 				if (find == this->end())
 					return 0;
-				this->tree_->delete_(x);
+				this->tree_.delete_(x);
 				return 1;
 			}
 

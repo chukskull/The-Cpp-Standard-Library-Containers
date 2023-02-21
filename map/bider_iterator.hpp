@@ -93,7 +93,11 @@ class map_iterator
 			}
 
 
-			T*	operator->(){return this->_iter->data_;}
+			type_pointer		operator->(){
+				
+				// std::cout << this->_iter->data_ << std::endl;
+				return this->_iter->data_;
+				}
 
 			map_iterator	operator++(int)
 			{

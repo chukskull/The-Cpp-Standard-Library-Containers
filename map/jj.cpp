@@ -3,19 +3,27 @@
 #include <string>
 
 int main() {
-    ft::map<int, int> my_map;
-    my_map.insert(ft::make_pair(1, 1));
-    my_map.insert(ft::make_pair(2, 2));
-    my_map.insert(ft::make_pair(3, 3));
-    my_map.insert(ft::make_pair(5, 4));
-    my_map.insert(ft::make_pair(6, 6));
-    
-    ft::map<int, int>::iterator it = my_map.begin();
+    ft::map<int, std::string, std::greater<int> > my_map;
+    my_map.insert(ft::make_pair(6, "betcha"));
+    my_map.insert(ft::make_pair(1, "skrillex"));
+    my_map.insert(ft::make_pair(3, "getter"));
+    my_map.insert(ft::make_pair(5, "arctic mnkys"));
+    my_map.insert(ft::make_pair(2, "lanadelrey"));
+
+    // std::cout << my_map.size() << std::endl;
+    // std::cout << my_map[3] << std::endl;
+    // // std::cerr << " after " << std::endl;
+    my_map.erase(3);
+    ft::map<int, std::string,std::greater<int> >::iterator it = my_map.begin();
+    // std::cout << "end " <<my_map.end()->first << std::endl;
     while (it != my_map.end())
     {
-        std::cout << it->first << it->second << std::endl;
+        std::cout << it->first<< " " << it->second << std::endl;
         it++;
     }
-    
+    // my_map.clear();
+    // std::cout << my_map.empty() << std::endl;
+    // std::cout << my_map.size() << std::endl;
+    // std::cout << my_map[2] << std::endl;
     return 0;
 }
