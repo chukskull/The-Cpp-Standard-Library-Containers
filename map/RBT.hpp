@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/21 17:59:29 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/22 15:38:24 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,14 @@ class Tree
 		typedef typename		std::allocator<Node>		Allocator_;
 		typedef	typename		ft::map_iterator<T, node_ptr>	iterator;
 		typedef typename		ft::map_iterator<const T, node_ptr>	const_iterator;
+		typedef typename		ft::map_rev_iterator<T, node_ptr>	reverse_iterator;
+		typedef	typename		ft::map_rev_iterator<const T, node_ptr>	const_reverse_iterator;
 		Tree()
 		{
 			this->naher_nill = _alloc.allocate(1);
 			_alloc.construct(this->naher_nill, Node());
+			this->naher_nill->data_ = data_alloc.allocate(1);
+			data_alloc.construct(this->naher_nill->data_, T());
 			naher_nill->color = BLCK;
 			naher_nill->parent = nullptr;
 			naher_nill->left = nullptr;
@@ -61,6 +65,8 @@ class Tree
 		{
 			this->naher_nill = _alloc.allocate(1);
 			_alloc.construct(this->naher_nill, Node());
+			this->naher_nill->data_ = data_alloc.allocate(1);
+			data_alloc.construct(this->naher_nill->data_, T());
 			this->root = naher_nill;
 			// _comp = comp;
 			naher_nill->color = BLCK;
@@ -464,7 +470,7 @@ class Tree
 			{
 				if (curr->data_->first == key)
 					return iterator(curr);
-				if (key < curr->data_->first)
+				if (_comp(key,  *(curr->data_)))
 					curr = curr->left;
 				else
 					curr = curr->right;

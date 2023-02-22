@@ -86,6 +86,8 @@
         "unordered_set": "cpp",
         "valarray": "cpp",
         "__memory": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "__functional_03": "cpp",
+        "__cxx_version": "cpp"
     }
 }

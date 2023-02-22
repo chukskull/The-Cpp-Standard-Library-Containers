@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/14 14:31:48 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/16 15:57:53 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include <vector>
-#include <iterator>
 #include "random_iter.hpp"
 #include <type_traits>
 #include <algorithm>
@@ -45,9 +44,8 @@ public:
 	typedef Allocator allocator_type;
 	
 	
-	typedef ft::reverse_iterator<iterator> reverse_iterator;
-	
-	typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+	typedef reverse_iterator<value_type> reverse_iterator;
+	typedef ft::reverse_iterator<const value_type> const_reverse_iterator;
 	explicit vector(const Allocator& alloc = Allocator())
 	{
 		this->arr = NULL;

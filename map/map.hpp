@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/21 16:47:41 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/22 16:12:47 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <map>
 #include <iostream>
 #include "pair.hpp"
-#include "less.hpp"
 #include "RBT.hpp"
 #include "bider_iterator.hpp"
 
@@ -47,6 +46,9 @@ namespace ft
 				bool operator()(const value_type& x,const  value_type& y) const {
 					 return comp(x.first, y.first);
 				}
+				bool operator()(const key_type& x,const  value_type& y) const {
+					 return comp(x, y.first);
+				}
 			};
 			typedef Compare key_compare;
 
@@ -62,11 +64,9 @@ namespace ft
 			// typedef     difference_type;// See 23.1
 			typedef typename Allocator::pointer pointer;
 
-			typedef typename Allocator::const_pointer const_pointer;
-
-			typedef std::reverse_iterator<iterator> reverse_iterator;
-
-			typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+			typedef typename 	Allocator::const_pointer	const_pointer;
+			typedef	typename	My_Tree::reverse_iterator	reverse_iterator;
+			typedef typename	My_Tree::const_reverse_iterator	const_reverse_iterator;
 			// 23.3.1.1 construct/copy/destroy:
 			explicit map(const Compare& comp = Compare(),
 			const Allocator& alloc_ = Allocator()): tree_(value_compare(comp)), _cmp(comp), alloc(alloc_)
@@ -93,27 +93,45 @@ namespace ft
 				return *this;
 			}
 			// iterators:
-			iterator begin() const
+			iterator begin()
 			{
 				return tree_.get_value_begin();
 			}
 
-			// const_iterator begin() const;
+			const_iterator begin() const
+			{
+				return (tree_.get_value_begin());
+			}
 
 			iterator end()
 			{
 				return iterator(tree_.get_value_end());
 			}
 
-			const_iterator end() const;
+			const_iterator end() const
+			{
+				return tree_.get_value_end();
+			}
 
-			reverse_iterator rbegin();
+			reverse_iterator rbegin()
+			{
+				return tree_.get_value_end();
+			}
 
-			const_reverse_iterator rbegin() const;
+			const_reverse_iterator rbegin() const
+			{
+				return tree_.get_value_end();
+			}
 
-			reverse_iterator rend();
+			reverse_iterator rend()
+			{
+				return tree_.get_value_begin();
+			}
 
-			const_reverse_iterator rend() const;
+			const_reverse_iterator rend() const
+			{
+				return tree_.get_value_begin();
+			}
 			// capacity:
 			bool empty() const
 			{
@@ -215,13 +233,19 @@ namespace ft
 				return	iterator(tree_.find_pair(x));
 			}
 
-			const_iterator find(const key_type& x) const;
+			const_iterator find(const key_type& x) const
+			{
+				return (tree_.find_pair(x));
+			}
 
 			size_type count(const key_type& x) const
 			{
 				iterator	temp = find(x);
 				if (temp != this->end())
+				{
+					std::cerr << "just why ? " << std::endl;
 					return 1;
+				}
 				return 0;
 			}
 			iterator lower_bound(const key_type& x)
@@ -234,7 +258,16 @@ namespace ft
 				}
 				return this->end();
 			}
-			const_iterator lower_bound(const key_type& x) const;
+			const_iterator lower_bound(const key_type& x) const
+			{
+				iterator	it = this->begin();
+				for (;it != this->end(); it++)
+				{
+					if (it->first >= x)
+						return it;
+				}
+				return const_iterator(this->end());
+			}
 
 			iterator upper_bound(const key_type& x)
 			{
@@ -247,11 +280,20 @@ namespace ft
 				return this->end();
 			}
 
-			const_iterator upper_bound(const key_type& x) const;
+			const_iterator upper_bound(const key_type& x) const
+			{
+				iterator	it = this->begin();
+				for (; it != this->end(); it++)
+				{
+					if (it->first > x)
+						return it;
+				}
+				return this->end();
+			}
 			pair<iterator,iterator>
 			equal_range(const key_type& x)
 			{
-				// return ft::make_pair(lower_bound(x), upper_bound(x));
+				return ft::make_pair(lower_bound(x), upper_bound(x));
 			}
 			pair<const_iterator,const_iterator>
 			equal_range(const key_type& x) const
@@ -266,10 +308,27 @@ namespace ft
 		};
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator==(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+		const map<Key,T,Compare,Allocator>& y)
+		{
+			if (x.size() == y.size()){
+            	typename ft::map<Key, T, Compare, Allocator>::iterator it = x.begin();
+            	typename ft::map<Key, T, Compare, Allocator>::iterator it1 = y.begin();
+            	for(; it != x.end(), it1 != y.end(); it++ , it1++)
+            	{
+                	if (*it != *it1)
+                    	return false;
+            	}
+        	}
+			else
+            	return false;
+        	return true;
+		}
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator< (const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+		const map<Key,T,Compare,Allocator>& y)
+		{
+			
+		}
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator!=(const map<Key,T,Compare,Allocator>& x,
 		const map<Key,T,Compare,Allocator>& y);

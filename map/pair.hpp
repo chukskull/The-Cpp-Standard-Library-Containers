@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:57:20 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/20 20:08:34 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/22 10:22:59 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ namespace   ft
         public:
             T1  first;
             T2  second;
-            pair(){}
+            pair(): first(), second(){
+                
+            }
             
             // operator T1() const
             // {

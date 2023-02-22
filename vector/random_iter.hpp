@@ -204,6 +204,7 @@ class My_iter
 	protected:
 		pointer		_iter;
 	};
+
 	template <class T,
 		class Category = std::random_access_iterator_tag,
 		class Distance = ptrdiff_t,
@@ -392,6 +393,7 @@ class My_iter
 			return	result;
 		}
 	} // namespace name
+
 	
 	template<class iter>
 	typename ft::iterator_traits<iter>::difference_type	 TheDistance(iter first, iter last)

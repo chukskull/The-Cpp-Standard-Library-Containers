@@ -137,7 +137,102 @@ class map_iterator
 	protected:
 		pointer		_iter;
 	};
+
+
+template <class T, class Node_ptr>
+
+class map_rev_iterator
+{
+		typedef T                               value_type;
+        typedef Node_ptr                         pointer;
+        typedef value_type&                     reference;
+        typedef value_type*                     type_pointer;
+        typedef ptrdiff_t                       difference_type;
+        typedef std::bidirectional_iterator_tag iterator_category;
+		public:
+			map_rev_iterator(pointer	iter): _iter(iter)
+			{
+
+			}
+			map_rev_iterator():_iter(nullptr)
+			{
+
+			}
+
+			map_rev_iterator(const	map_rev_iterator &other)
+			{
+				this->_iter = other._iter;
+			}
+			operator map_rev_iterator<const value_type, Node_ptr>() const 
+			{
+    			return map_rev_iterator<const	value_type, Node_ptr>(_iter);
+    		}
+			map_rev_iterator	&operator=(const map_rev_iterator<value_type, Node_ptr> &rhs)
+			{
+				if (this != &rhs)
+				{
+					this->_iter = rhs._iter;
+				}
+				return (*this);
+			}
+
+			bool	operator==(const map_rev_iterator &other)
+			{
+				return (this->_iter == other._iter);
+			}
+
+			bool	operator!=(const map_rev_iterator	&other)
+			{
+				return(this->_iter != other._iter);
+			}
+
+
+			type_pointer		operator->(){
+				
+				// std::cout << this->_iter->data_ << std::endl;
+				return this->_iter->data_;
+				}
+
+			map_rev_iterator	operator++(int)
+			{
+				const map_rev_iterator		temp(*this);
+
+				this->_iter = this->_iter->_prev;
+				return	temp;
+			}
+
+			map_rev_iterator	&operator++()
+			{
+				this->_iter = this->_iter->_prev;
+				return	*this;
+			}
+
+			map_rev_iterator	operator--(int)
+			{
+				map_rev_iterator		temp(*this);
+
+				this->_iter = this->_iter->_next;
+				return	temp;
+			}
+
+			map_rev_iterator	&operator--()
+			{
+				this->_iter = this->_iter->_next;
+				return	*this;
+			}
+
+			reference	operator*(){return _iter->data_;}
+
+			map_rev_iterator		getPointer()const
+			{
+				return this->_iter;
+
+			}
+	protected:
+		pointer		_iter;
+};
 }
+
 // 	template <class T,
 // 		class Category = std::random_access_iterator_tag,
 // 		class Distance = ptrdiff_t,

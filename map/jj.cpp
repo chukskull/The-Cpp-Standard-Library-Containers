@@ -12,7 +12,7 @@ int main() {
 
     // std::cout << my_map.size() << std::endl;
     // std::cout << my_map[3] << std::endl;
-    // // std::cerr << " after " << std::endl;
+    // // std::cerr << " astder " << std::endl;
     my_map.erase(3);
     ft::map<int, std::string,std::greater<int> >::iterator it = my_map.begin();
     // std::cout << "end " <<my_map.end()->first << std::endl;
@@ -21,6 +21,9 @@ int main() {
         std::cout << it->first<< " " << it->second << std::endl;
         it++;
     }
+    ft::map<int, std::string, std::greater<int> >::iterator np = my_map.find(15);
+
+    std::cout << np->first << std::endl;
     // my_map.clear();
     // std::cout << my_map.empty() << std::endl;
     // std::cout << my_map.size() << std::endl;
