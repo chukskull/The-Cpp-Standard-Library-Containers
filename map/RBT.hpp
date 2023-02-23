@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/22 15:38:24 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/23 16:40:22 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,31 +44,31 @@ class Tree
 		typedef typename		std::allocator<Node>		Allocator_;
 		typedef	typename		ft::map_iterator<T, node_ptr>	iterator;
 		typedef typename		ft::map_iterator<const T, node_ptr>	const_iterator;
-		typedef typename		ft::map_rev_iterator<T, node_ptr>	reverse_iterator;
-		typedef	typename		ft::map_rev_iterator<const T, node_ptr>	const_reverse_iterator;
-		Tree()
-		{
-			this->naher_nill = _alloc.allocate(1);
-			_alloc.construct(this->naher_nill, Node());
-			this->naher_nill->data_ = data_alloc.allocate(1);
-			data_alloc.construct(this->naher_nill->data_, T());
-			naher_nill->color = BLCK;
-			naher_nill->parent = nullptr;
-			naher_nill->left = nullptr;
-			naher_nill->right = nullptr;
-			naher_nill->_next = nullptr;
-			naher_nill->_prev = nullptr;
-			this->root = naher_nill;
-			this->size_ = 0;
-		}
+		typedef typename		ft::map_rev_iterator<iterator>	reverse_iterator;
+		typedef	typename		ft::map_rev_iterator<const iterator>	const_reverse_iterator;
+		// Tree():
+		// {
+		// 	this->naher_nill = _alloc.allocate(1);
+		// 	_alloc.construct(this->naher_nill, Node());
+		// 	this->naher_nill->data_ = data_alloc.allocate(1);
+		// 	data_alloc.construct(this->naher_nill->data_, T());
+		// 	naher_nill->color = BLCK;
+		// 	naher_nill->parent = nullptr;
+		// 	naher_nill->left = nullptr;
+		// 	naher_nill->right = nullptr;
+		// 	naher_nill->_next = nullptr;
+		// 	naher_nill->_prev = nullptr;
+		// 	this->root = naher_nill;
+		// 	this->size_ = 0;
+		// }
 		Tree(const value_compare &comp):_comp(comp)
 		{
+			this->size_ = 0;
 			this->naher_nill = _alloc.allocate(1);
 			_alloc.construct(this->naher_nill, Node());
 			this->naher_nill->data_ = data_alloc.allocate(1);
 			data_alloc.construct(this->naher_nill->data_, T());
 			this->root = naher_nill;
-			// _comp = comp;
 			naher_nill->color = BLCK;
 			naher_nill->parent = nullptr;
 			naher_nill->left = nullptr;
@@ -78,17 +78,17 @@ class Tree
 		}
 		// constructor to initialize data_ and pointers
 		// Tree(T *data) : data_(data){};
-		Tree(const Tree	&x)
-		{
-			if (this != &x)
-			{
-				this->root = x.root;
-				_comp(x._comp);
-				this->_alloc = x._alloc;
-				this->naher_nill = x.naher_nill;
-				naher_nill->color = BLCK;
-			}
-		}
+		// Tree(const Tree	&x)
+		// {
+		// 	if (this != &x)
+		// 	{
+		// 		this->root = x.root;
+		// 		_comp(x._comp);
+		// 		this->_alloc = x._alloc;
+		// 		this->naher_nill = x.naher_nill;
+		// 		naher_nill->color = BLCK;
+		// 	}
+		// }
 
 		node_ptr	successor(node_ptr	node)
 		{
@@ -98,7 +98,7 @@ class Tree
 			{
 				node_ptr	p;
 				p = node->parent; // 2
-				if(p != naher_nill && p->right == node)
+				while (p != naher_nill && p->right == node)
 				{
 					node = p;//node hiya 2
 					p = p->parent;//p d p is 4
@@ -116,11 +116,11 @@ class Tree
 			else
 			{
 				node_ptr	p = node->parent;
-				if (p != naher_nill && p->left == node)
+				while (p != naher_nill && p->left == node)
 				{
 					node = p;
 					p = p->parent;
-				}
+				}	
 				return p;
 			}
 		}
@@ -177,7 +177,7 @@ class Tree
 		{
 			node_ptr	current = p;
 
-			while(current->left != naher_nill)
+			while(current && current->left != naher_nill && current != naher_nill)
 			{
 				current = current->left;
 			}
@@ -273,7 +273,7 @@ class Tree
 		Node   *maximum(node_ptr nax)
 		{
 			node_ptr	curr = nax;
-			while(curr->right != naher_nill)
+			while(curr && curr->right != naher_nill && curr != naher_nill)
 			{
 				curr = curr->right;
 			}
@@ -424,10 +424,12 @@ class Tree
             this->naher_nill->_next = nullptr;
 			new_ele->color = RED;
 			this->size_++;
+			// std::cout << new_ele->data_->first << " " << "prev = " << new_ele->_prev->data_->first << " next = " << new_ele->_next->data_->first << std::endl;
+			// getchar(); 
 			RB_insert_Fixup(new_ele);
-			std::cout << "--------" << std::endl;
-			this->print2D();
-			std::cout << "--------" << std::endl;
+			// std::cout << "--------" << std::endl;
+			// this->print2D();
+			// std::cout << "--------" << std::endl;
 			return iterator(new_ele);
 		}
 		template<class iterator>
@@ -454,10 +456,41 @@ class Tree
 			node_ptr temp = minimum(this->root);
 			return (iterator(temp));
 		}
-		node_ptr	get_value_end()const
+		iterator	get_value_end()const
 		{
-			return naher_nill;
+			return iterator(this->naher_nill);
 		}
+		const_iterator	get_value_begin_const() const{
+			node_ptr	temp = minimum(this->root);
+
+			return (const_iterator(temp));
+		}
+
+		const_iterator	get_value_end_const() const{
+			return (const_iterator(this->naher_nill));
+		}
+		const_reverse_iterator	get_value_begin_const_rev() const{
+			return const_reverse_iterator(this->naher_nill);
+		}
+		const_reverse_iterator	get_value_end_const_rev() const{
+
+			node_ptr	temp = minimum(this->root);
+
+			return (const_reverse_iterator(temp));
+		}
+
+		reverse_iterator	get_value_begin_rev()const
+		{
+			return reverse_iterator(this->naher_nill);
+		}
+		
+		reverse_iterator	get_value_end_rev()const
+		{
+
+			return (reverse_iterator(minimum(this->root)));
+		}
+
+
 		size_t	size()const
 		{
 			return this->size_;

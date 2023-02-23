@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/16 15:57:53 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/23 20:27:38 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <vector>
 #include "random_iter.hpp"
+#include "lexicographical.hpp"
 #include <type_traits>
 #include <algorithm>
 
@@ -177,7 +178,7 @@ public:
 	
 	const_iterator begin() const
 	{
-		return const_iterator(&this->att[0]);
+		return const_iterator(&this->arr[0]);
 	}
 	
 	iterator end(){
@@ -515,13 +516,79 @@ public:
 	
 	// iterator erase(iterator first, iterator last);
 	
-	void swap(vector<T,Allocator>&);
+	void swap(vector<T,Allocator> &x)
+	{
+		size_type	c_temp = x.capacity();
+		size_type	s_temp = x.size();
+		Allocator	_alloc_temp = x._alloc;	
+		value_type	*temp = x.arr;
+	
+		x.Capacity = this->Capacity;
+		x.Size = this->Size;
+		x._alloc = this->_alloc;
+		x.arr = this->arr;
+
+
+		this->Capacity = c_temp;
+		this->Size = s_temp;
+		this->_alloc = _alloc_temp;
+		this->arr = temp;
+	}
 private:
 	value_type			*arr;
 	size_type			Capacity;
 	size_type			Size;
 	Allocator			_alloc;
 };
+
+
+template<class _Tp, class _Allocator>
+bool
+operator==(const vector<_Tp, _Allocator>& __x, const vector<_Tp, _Allocator>& __y)
+{
+    const typename vector<_Tp, _Allocator>::size_type __sz = __x.size();
+    return __sz == __y.size() && std::equal(__x.begin(), __x.end(), __y.begin());
+}
+
+template<class _Tp, class _Allocator>
+bool
+operator!=(const vector<_Tp, _Allocator> & __x, const vector<_Tp, _Allocator> &__y)
+{
+	return !(__x == __y);
+}
+
+template<class _Tp, class _Allocator>
+bool
+operator<(const vector<_Tp, _Allocator> &__x, const vector<_Tp, _Allocator> &__y)
+{
+	return ft::lexicographical_compare(__x.begin(), __x.end(), __y.begin(), __y.end());
+}
+
+template<class _Tp, class _Allocator>
+bool operator>(const vector<_Tp, _Allocator> &__x, const vector<_Tp, _Allocator> &__y)
+{
+	return __y < __x;
+}
+
+template <class _Tp, class _Allocator>
+bool
+operator>=(const vector<_Tp, _Allocator>& __x, const vector<_Tp, _Allocator>& __y)
+{
+    return !(__x < __y);
+}
+
+template <class _Tp, class _Allocator>
+bool
+operator<=(const vector<_Tp, _Allocator>& __x, const vector<_Tp, _Allocator>& __y)
+{
+    return !(__y < __x);
+}
+   template <class T, class Alloc>
+    void swap (vector<T,Alloc>& x, vector<T,Alloc>& y){
+        vector<T, Alloc> tmp(x);
+        x.swap(y);
+        y.swap(tmp);
+    }
 }
 
 #endif

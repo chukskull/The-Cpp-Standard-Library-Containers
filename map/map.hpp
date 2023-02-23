@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/22 16:12:47 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/23 11:18:13 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ namespace ft
 			}
 			template <class InputIterator>
 			map(InputIterator first, InputIterator last,
-			const Compare& comp = Compare(), const Allocator& alloc_= Allocator())
+			const Compare& comp = Compare(), const Allocator& alloc_= Allocator()):tree_(value_compare(comp)), _cmp(comp), alloc(alloc_)
 			{
 				this->tree_.insert_iterator(first, last);
 			}
@@ -86,10 +86,9 @@ namespace ft
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x)
 			{
-				if (this != &x)
-				{
-					this(x);
-				}
+				this->_cmp = x._cmp;
+				this->tree_ = x.tree_;
+				this->alloc = x.alloc;
 				return *this;
 			}
 			// iterators:
@@ -100,7 +99,7 @@ namespace ft
 
 			const_iterator begin() const
 			{
-				return (tree_.get_value_begin());
+				return (tree_.get_value_begin_const());
 			}
 
 			iterator end()
@@ -110,27 +109,27 @@ namespace ft
 
 			const_iterator end() const
 			{
-				return tree_.get_value_end();
+				return tree_.get_value_end_const();
 			}
 
 			reverse_iterator rbegin()
 			{
-				return tree_.get_value_end();
+				return tree_.get_value_begin_rev();
 			}
 
 			const_reverse_iterator rbegin() const
 			{
-				return tree_.get_value_end();
+				return tree_.get_value_begin_const_rev();
 			}
 
 			reverse_iterator rend()
 			{
-				return tree_.get_value_begin();
+				return tree_.get_value_end_rev();
 			}
 
 			const_reverse_iterator rend() const
 			{
-				return tree_.get_value_begin();
+				return tree_.get_value_end_const_rev();
 			}
 			// capacity:
 			bool empty() const
@@ -164,13 +163,23 @@ namespace ft
 				iterator	new_one = find(x.first);
 				if (new_one == this->end())
 				{
-					std::cout << " lol " << std::endl;
+					// std::cout << " lol " << std::endl;
 					return ft::make_pair(tree_.insert(x), true);
 	
 				}
 				return	ft::make_pair(new_one, false);
 			}
 
+			iterator find(const key_type& x)
+			{
+				return	iterator(tree_.find_pair(x));
+			}
+
+			const_iterator find(const key_type& x) const
+			{
+				return const_iterator(tree_.find_pair(x));
+			}
+			
 			iterator insert(iterator position, const value_type& x)
 			{
 				(void)position;
@@ -178,7 +187,7 @@ namespace ft
 				if (new_one == this->end())
 				{
 					tree_.insert(x);
-					return find(x);
+					return find(x.first);
 				}
 				return new_one;
 			}
@@ -190,7 +199,7 @@ namespace ft
 			}
 			void erase(iterator position)
 			{
-				this->tree_->delete_(position->first);
+				this->tree_.delete_(position->first);
 			}
 			size_type erase(const key_type& x)
 			{
@@ -226,21 +235,12 @@ namespace ft
 
 			value_compare value_comp() const
 			{
-				return value_comp(this->_cmp);
-			}
-			iterator find(const key_type& x)
-			{
-				return	iterator(tree_.find_pair(x));
-			}
-
-			const_iterator find(const key_type& x) const
-			{
-				return (tree_.find_pair(x));
+				return this->_cmp;
 			}
 
 			size_type count(const key_type& x) const
 			{
-				iterator	temp = find(x);
+				const_iterator	temp = find(x);
 				if (temp != this->end())
 				{
 					std::cerr << "just why ? " << std::endl;

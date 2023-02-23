@@ -49,12 +49,13 @@ namespace ft {
 template <class T, class Node_ptr>
 class map_iterator
 	{
-		typedef T                               value_type;
-        typedef Node_ptr                         pointer;
-        typedef value_type&                     reference;
-        typedef value_type*                     type_pointer;
-        typedef ptrdiff_t                       difference_type;
-        typedef std::bidirectional_iterator_tag iterator_category;
+		public:
+			typedef T                               value_type;
+        	typedef Node_ptr                         pointer;
+        	typedef value_type&                     reference;
+        	typedef value_type*                     type_pointer;
+        	typedef ptrdiff_t                       difference_type;
+        	typedef std::bidirectional_iterator_tag iterator_category;
 		public:
 			map_iterator(pointer	iter): _iter(iter)
 			{
@@ -101,9 +102,8 @@ class map_iterator
 
 			map_iterator	operator++(int)
 			{
-				const map_iterator		temp(*this);
-
-				this->_iter = this->_iter->_next;
+				map_iterator		temp(_iter);
+					this->_iter = this->_iter->_next;
 				return	temp;
 			}
 
@@ -127,7 +127,11 @@ class map_iterator
 				return	*this;
 			}
 
-			reference	operator*(){return _iter->data_;}
+			reference	operator*(){return *(this->_iter->data_);}
+
+			pointer get_pointer() const{
+            	return this->_iter;
+        	}
 
 			map_iterator		getPointer()const
 			{
@@ -139,18 +143,19 @@ class map_iterator
 	};
 
 
-template <class T, class Node_ptr>
-
+// template <class T, class Node_ptr>
+template <class iter>
 class map_rev_iterator
 {
-		typedef T                               value_type;
-        typedef Node_ptr                         pointer;
-        typedef value_type&                     reference;
-        typedef value_type*                     type_pointer;
-        typedef ptrdiff_t                       difference_type;
-        typedef std::bidirectional_iterator_tag iterator_category;
+		typedef	iter													iterator_type;
+		typedef	typename ft::iterator_traits<iter>::value_type			value_type;
+		typedef typename ft::iterator_traits<iter>::difference_type     difference_type;
+        typedef typename ft::iterator_traits<iter>::pointer             pointer;
+        typedef typename ft::iterator_traits<iter>::reference           reference;
+        typedef typename ft::iterator_traits<iter>::iterator_category   iterator_category;
+        typedef typename iter::type_pointer                             type_pointer;
 		public:
-			map_rev_iterator(pointer	iter): _iter(iter)
+			map_rev_iterator(iter	iter2): _iter(iter2)
 			{
 
 			}
@@ -158,16 +163,7 @@ class map_rev_iterator
 			{
 
 			}
-
-			map_rev_iterator(const	map_rev_iterator &other)
-			{
-				this->_iter = other._iter;
-			}
-			operator map_rev_iterator<const value_type, Node_ptr>() const 
-			{
-    			return map_rev_iterator<const	value_type, Node_ptr>(_iter);
-    		}
-			map_rev_iterator	&operator=(const map_rev_iterator<value_type, Node_ptr> &rhs)
+			map_rev_iterator	&operator=(const map_rev_iterator<iter> &rhs)
 			{
 				if (this != &rhs)
 				{
@@ -189,21 +185,21 @@ class map_rev_iterator
 
 			type_pointer		operator->(){
 				
-				// std::cout << this->_iter->data_ << std::endl;
-				return this->_iter->data_;
+				iter temp = _iter;
+				return ((--temp).get_pointer())->data_;
 				}
 
 			map_rev_iterator	operator++(int)
 			{
 				const map_rev_iterator		temp(*this);
 
-				this->_iter = this->_iter->_prev;
+				--this->_iter;
 				return	temp;
 			}
 
 			map_rev_iterator	&operator++()
 			{
-				this->_iter = this->_iter->_prev;
+				--this->_iter;
 				return	*this;
 			}
 
@@ -211,25 +207,22 @@ class map_rev_iterator
 			{
 				map_rev_iterator		temp(*this);
 
-				this->_iter = this->_iter->_next;
+				this->_iter++;
 				return	temp;
 			}
-
+			
 			map_rev_iterator	&operator--()
 			{
-				this->_iter = this->_iter->_next;
+				this->_iter++;
 				return	*this;
 			}
 
-			reference	operator*(){return _iter->data_;}
-
-			map_rev_iterator		getPointer()const
-			{
-				return this->_iter;
-
-			}
+			reference	operator*(){
+				iter tmp = _iter;
+				return *(--tmp);
+				}
 	protected:
-		pointer		_iter;
+		iter		_iter;
 };
 }
 

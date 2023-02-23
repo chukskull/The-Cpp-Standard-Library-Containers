@@ -56,6 +56,11 @@ class My_iter
 			typedef Pointer		pointer;
 			typedef Reference			reference;
 			typedef Category	iterator_category;
+
+			My_iter(const	My_iter &other)
+			{
+				this->_iter = other._iter;
+			}
 		My_iter(pointer	iter): _iter(iter)
 		{
 
@@ -64,11 +69,7 @@ class My_iter
 		{
 
 		}
-
-		My_iter(const	My_iter &other)
-		{
-			this->_iter = other._iter;
-		}
+		public:
 		operator My_iter<const T>() const 
 		{
         	return My_iter<const	T>(_iter);
