@@ -1433,7 +1433,6 @@ void test_map()
 
         std::map<int, std::string>::iterator stl_it = stl_map.lower_bound(80);
         ft::map<int, std::string>::iterator ft_it = ft_map.lower_bound(80);
-
         std::cout << "[";
         std::cout << ((printSingleValue(fs, (*stl_it).first, (*ft_it).first) == true) ? OK : NOP );
         std::cout << ((printSingleValue(fs, (*stl_it).second, (*ft_it).second) == true) ? OK : NOP );

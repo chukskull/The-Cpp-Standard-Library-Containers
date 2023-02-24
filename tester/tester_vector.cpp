@@ -81,13 +81,13 @@ bool printVectorAttributes(
 
     fs << "Content  [" << content << "]: [";
 
-    // typename ft::vector<T>::const_iterator ft_it;
-    // for(ft_it = ft_vector.cbegin(); ft_it != ft_vector.cend(); ft_it++)
-    // {
-    //     fs << *ft_it;
-    //     if (ft_it + 1 != ft_vector.cend())
-    //         fs << ", ";
-    // }
+    typename ft::vector<T>::const_iterator ft_it;
+    for(ft_it = ft_vector.begin(); ft_it != ft_vector.end(); ft_it++)
+    {
+        fs << *ft_it;
+        if (ft_it + 1 != ft_vector.end())
+            fs << ", ";
+    }
     fs << "]\n";
 
     fs << "══════════════════════════════════════════════════════════════\n";
@@ -345,12 +345,12 @@ void test_vector()
     
         fs.open("./tester/vectors_output/iterator_const_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
         
-        // std::vector<int>::const_iterator stl_const_it = stl_range_vector.begin();
-        // ft::vector<int>::const_iterator ft_const_it = ft_range_vector.cbegin();
-        // const int from_stl = *(stl_const_it);
-        // const int from_ft = *(ft_const_it);
+        std::vector<int>::const_iterator stl_const_it = stl_range_vector.begin();
+        ft::vector<int>::const_iterator ft_const_it = ft_range_vector.begin();
+        const int from_stl = *(stl_const_it);
+        const int from_ft = *(ft_const_it);
 
-        // std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? OK : NOP);
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? OK : NOP);
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 87, 92, -5, 8984, 96 };\n";
@@ -419,12 +419,12 @@ void test_vector()
     
         fs.open("./tester/vectors_output/iterator_const_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
         
-        // std::vector<int>::const_iterator stl_const_it = stl_range_vector.end() - 1;
-        // ft::vector<int>::const_iterator ft_const_it = ft_range_vector.cend() - 1;
-        // const int from_stl = *(stl_const_it);
-        // const int from_ft = *(ft_const_it);
+        std::vector<int>::const_iterator stl_const_it = stl_range_vector.end() - 1;
+        ft::vector<int>::const_iterator ft_const_it = ft_range_vector.end() - 1;
+        const int from_stl = *(stl_const_it);
+        const int from_ft = *(ft_const_it);
 
-        // std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? OK : NOP);
+        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? OK : NOP);
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array[] = { 95, 89, -6121, 48, 5 };\n";
@@ -494,7 +494,7 @@ void test_vector()
         fs.open("./tester/vectors_output/iterator_const_reverse_begin", std::fstream::in | std::fstream::out | std::fstream::trunc);
         
         // std::vector<int>::const_reverse_iterator stl_const_it = stl_range_vector.rbegin();
-        // ft::vector<int>::const_reverse_iterator ft_const_it = ft_range_vector.crbegin();
+        // ft::vector<int>::const_reverse_iterator ft_const_it = ft_range_vector.rbegin();
         // const int from_stl = *(stl_const_it);
         // const int from_ft = *(ft_const_it);
 
@@ -568,7 +568,7 @@ void test_vector()
         fs.open("./tester/vectors_output/iterator_const_reverse_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
         
         // std::vector<int>::const_reverse_iterator stl_const_it = stl_range_vector.rend() - 1;
-        // ft::vector<int>::const_reverse_iterator ft_const_it = ft_range_vector.crend() - 1;
+        // ft::vector<int>::const_reverse_iterator ft_const_it = ft_range_vector.rend() - 1;
         // const int from_stl = *(stl_const_it);
         // const int from_ft = *(ft_const_it);
 
@@ -1203,6 +1203,7 @@ void test_vector()
         fs << "stl_popback.pop_back();\n";
         fs.close();
     }
+        // std::cout << "hna " << std::endl;
 
     /* Insert single element */
     {
@@ -1581,7 +1582,6 @@ void test_vector()
         printVectorAttributes(fs, stl_operator_two, ft_operator_two);
 
         std::cout << ((printBoolResult(fs, (stl_operator_one != stl_operator_two), (ft_operator_one != ft_operator_two))) ? OK : NOP);
-
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
         fs << "int range_array_one[] = {144, 335, 5, 0, -54};\n";
@@ -1687,6 +1687,7 @@ void test_vector()
     /* RL '<=' true */
     {
         int range_array_one[] = {144, 335, 1, -98, 5};
+    puts("rock you galek");
         int range_array_two[] = {144, 335, 5, 0, -54};
 
         // std::vector<int>::iterator range_array_one(&(range_array_one[0]));
@@ -1986,12 +1987,12 @@ void test_vector()
         ft::vector<int> ft_swap_one(ft_iterator_beg_one, ft_iterator_beg_one + 5);
         ft::vector<int> ft_swap_two(ft_iterator_beg_two, ft_iterator_beg_two + 5);
 
-        // std::swap(stl_swap_one, stl_swap_two);
-        // ft::swap(ft_swap_one, ft_swap_two);
+        std::swap(stl_swap_one, stl_swap_two);
+        ft::swap(ft_swap_one, ft_swap_two);
 
         fs.open("./tester/vectors_output/swap_no_member", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        // std::cout << ((printVectorAttributes(fs, stl_swap_one, ft_swap_one) == true) ? OK : NOP);
-        // std::cout << ((printVectorAttributes(fs, stl_swap_two, ft_swap_two) == true) ? OK : NOP);
+        std::cout << ((printVectorAttributes(fs, stl_swap_one, ft_swap_one) == true) ? OK : NOP);
+        std::cout << ((printVectorAttributes(fs, stl_swap_two, ft_swap_two) == true) ? OK : NOP);
 
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";

@@ -70,18 +70,18 @@ class My_iter
 
 		}
 		public:
-		operator My_iter<const T>() const 
-		{
-        	return My_iter<const	T>(_iter);
-    	}
-		My_iter	&operator=(const My_iter &rhs)
-		{
-			if (this != &rhs)
+			operator My_iter<const T>() const 
 			{
-				this->_iter = rhs._iter;
+        		return My_iter<const	T>(_iter);
+    		}
+			My_iter	&operator=(const My_iter &rhs)
+			{
+				if (this != &rhs)
+				{
+					this->_iter = rhs._iter;
+				}
+				return (*this);
 			}
-			return (*this);
-		}
 
 		bool	operator==(const My_iter &other)
 		{
@@ -98,7 +98,7 @@ class My_iter
 			return (*ptr);
 		}
 
-		My_iter*	operator->(){return this->_iter;}
+		reference	operator->(){return *this->_iter;}
 
 	 	My_iter	operator++(int)
 		{
@@ -206,20 +206,17 @@ class My_iter
 		pointer		_iter;
 	};
 
-	template <class T,
-		class Category = std::random_access_iterator_tag,
-		class Distance = ptrdiff_t,
-		class Pointer = T*,
-		class Reference = T&>
+	template <class iter>
 	class	reverse_iterator
 	{
 		public:
-			typedef T			value_type;
-			typedef Distance	difference_type;
-			typedef Pointer		pointer;
-			typedef Reference	reference;
-			typedef Category	iterator_category;
-			reverse_iterator(pointer	iter): _iter(iter)
+		typedef	iter													iterator_type;
+		typedef	typename ft::iterator_traits<iter>::value_type			value_type;
+		typedef typename ft::iterator_traits<iter>::difference_type     difference_type;
+        typedef typename ft::iterator_traits<iter>::pointer             pointer;
+        typedef typename ft::iterator_traits<iter>::reference           reference;
+        typedef typename ft::iterator_traits<iter>::iterator_category   iterator_category;
+			reverse_iterator(iter	iter2): _iter(iter2)
 			{
 
 			}
@@ -228,10 +225,10 @@ class My_iter
 
 			}
 
-			reverse_iterator(const	reverse_iterator &other)
+			operator reverse_iterator <const iter>() const 
 			{
-				this->_iter = other._iter;
-			}
+        		return reverse_iterator<const	iter>(_iter);
+    		}
 
 			reverse_iterator	&operator=(const reverse_iterator &rhs)
 			{
@@ -240,6 +237,9 @@ class My_iter
 					this->_iter = rhs._iter;
 				}
 				return (*this);
+			}
+			reverse_iterator(const	reverse_iterator &other):_iter(other._iter)
+			{
 			}
 
 			bool	operator==(const reverse_iterator &other)
@@ -252,18 +252,13 @@ class My_iter
 				return(this->_iter != other._iter);
 			}
 
-			reference	ConvertToType(pointer	ptr)
-			{
-				return (*ptr);
-			}
-
-			reverse_iterator*	operator->(){return this->_iter;}
+			reverse_iterator*	operator->(){return this->_iter->getPointer();}
 
 	 		reverse_iterator	operator++(int)
 			{
 				const reverse_iterator		temp(*this);
 
-				++this->_iter;
+				--this->_iter;
 				return	temp;
 			}
 
@@ -317,7 +312,7 @@ class My_iter
 
 			reverse_iterator	operator-(const difference_type	&m)
 			{
-				pointer	store;
+				iter	store;
 
 				store = this->_iter;
 				this->_iter -= m;
@@ -329,7 +324,10 @@ class My_iter
 			{
 				return (obj.getPointer() - this->getPointer());
 			}
-			reference	operator*(){return *_iter;}
+			reference	operator*(){
+				iter tmp = _iter;
+                return (*--tmp);
+				}
 
 			value_type	operator[](size_t	index)
 			{
@@ -361,7 +359,7 @@ class My_iter
 				return this->_iter;
 			}
 		protected:
-			pointer	_iter;
+			iter	_iter;
 	};
 }
 	// template<class Iterator>

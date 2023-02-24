@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/23 20:27:38 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/24 17:25:56 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ public:
 	typedef Allocator allocator_type;
 	
 	
-	typedef reverse_iterator<value_type> reverse_iterator;
-	typedef ft::reverse_iterator<const value_type> const_reverse_iterator;
+	typedef reverse_iterator<iterator> reverse_iterator;
+	typedef ft::reverse_iterator<const iterator> const_reverse_iterator;
 	explicit vector(const Allocator& alloc = Allocator())
 	{
 		this->arr = NULL;
@@ -289,10 +289,18 @@ public:
 	}
 	// element access:
 	reference operator[](size_type n){
+		if (n >= this->size())
+			throw std::out_of_range("out of range");
 		return (this->arr[n]);
 	}
 	
-	const_reference operator[](size_type n) const;
+	const_reference operator[](size_type n) const
+	{
+		if (n >= this->size())
+			throw std::out_of_range("out of range");
+		return (this->arr[n]);
+	}
+
 	
 	const_reference at(size_type n) const;
 	
@@ -348,9 +356,11 @@ public:
 		this->Size--;
 	}
 	
+	// if size + 1 > capacity reallocate(capacity * 2) 
 	iterator insert(iterator position, const T& x)
 	{
-		int  count = 0;
+		size_type  count = 0;
+		size_type old_cp = this->capacity();
 		iterator	it = this->begin();
 		while( it != position)
 		{
@@ -358,11 +368,11 @@ public:
 			it++;
 		}
 		int i = 0;
-		if (size() <= capacity())
+		if (size() + 1 > capacity())
 			resize(size() + 1);
 		else
 			this->Size++;
-		i = size() - 1;
+		i = size();
 		while(i > count)
 		{
 			arr[i] = arr[i - 1];
@@ -370,10 +380,16 @@ public:
 		}
 		iterator lol = iterator(&arr[i]);
 		arr[i] = x;
+		for(int i = 0; i < size(); i++)
+		{
+			std::cerr << arr[i] << std::endl;
+		}
+		this->Capacity = old_cp * 2;
 		return lol;
 
 		// resize()
 	}
+	
 	void	insert(iterator position, size_type n, const value_type& val)
 	{
 		int count = 0;
@@ -384,11 +400,11 @@ public:
 			iter++;
 		}
 		int s = 0;
-		if (size() + n <= capacity())
+		if (size() + n > capacity())
 			resize(size() + n);
 		else
 			this->Size += n;
-		s = size() -1;
+		s = size() - 1;
 		while (s > count)
 		{
 			arr[s] = arr[s - n];
@@ -414,7 +430,7 @@ public:
 		}
 		difference_type distance = abs(TheDistance(first, last));
 		int	s = 0;
-		if (size() + distance <= capacity())
+		if (size() + distance > capacity())
 			resize(size() + distance);
 		else
 			this->Size += distance;
@@ -433,6 +449,7 @@ public:
 			first++;
 		}
 	}
+	
 	iterator	erase(iterator position)
 	{
 		int count = 0;
@@ -547,7 +564,17 @@ bool
 operator==(const vector<_Tp, _Allocator>& __x, const vector<_Tp, _Allocator>& __y)
 {
     const typename vector<_Tp, _Allocator>::size_type __sz = __x.size();
-    return __sz == __y.size() && std::equal(__x.begin(), __x.end(), __y.begin());
+   	if (__sz == __y.size())
+   	{
+		for(typename vector<_Tp, _Allocator>::size_type i = 0; i < __sz; i++)
+		{
+			if(__x[i] != __y[i])
+				return false;
+		}
+   	}
+	else
+		return false;
+	return true;
 }
 
 template<class _Tp, class _Allocator>
