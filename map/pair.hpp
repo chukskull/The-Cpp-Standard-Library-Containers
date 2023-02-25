@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:57:20 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/22 10:22:59 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/25 15:04:30 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,6 @@ namespace   ft
             pair(): first(), second(){
                 
             }
-            
-            // operator T1() const
-            // {
-            //     return first;
-            // } 
             pair(const T1 &a, const T2 &b):first(a), second(b){}
             template<class U, class V>
             pair(const  pair<U, V> &pr):first(pr.first), second(pr.second)

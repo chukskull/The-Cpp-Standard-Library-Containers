@@ -11,7 +11,7 @@ lexicographical_compare(iter first1, iter last1, iter2 first2, iter2 last2)
     {
         if(first2 == last2 || *first2 < *first1)
             return false;
-        else
+        else if (*first1 < *first2)
             return true;
     }
     return first2 != last2;

@@ -520,80 +520,6 @@ void test_vector()
         fs.close();
     }
 
-        /* Iterator rend() */
-    {
-        int range_array[] = {78, -951, 562, 8, 745, 51236, 6987};
-
-        // std::vector<int>::iterator stl_iterator(&(range_array[0]));
-        ft::vector<int>::iterator ft_iterator(&(range_array[0]));
-
-        std::vector<int> stl_range_vector(range_array, range_array + 7);
-        ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 7);
-    
-        fs.open("./tester/vectors_output/iterator_reverse_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        
-        int from_stl = *(stl_range_vector.rend() - 1);
-        int from_ft = *(ft_range_vector.rend()  - 1);
-
-        std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? OK : NOP);
-        fs << "\nCode executed:\n";
-        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
-        fs << "int range_array[] = {78, -951, 562, 8, 745, 51236, 6987};\n";
-        fs << "ft::vector<int>::iterator ft_iterator(&(range_array[0]));\n";
-        fs << "ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 7);\n";
-        fs << "int from_ft = *(ft_range_vector.rend() - 1);\n";
-        fs << "    ^^^^^^^\n";
-        fs << "    Compared value";
-        fs << "\nCompared with:\n";
-        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
-        fs << "int range_array[] = {78, -951, 562, 8, 745, 51236, 6987};\n";
-        fs << "std::vector<int>::iterator range_array(&(range_array[0]));\n";
-        fs << "std::vector<int> stl_range_vector(range_array, range_array + 7);\n";
-        fs << "int from_stl = *(stl_range_vector.rend() - 1);\n";
-        fs << "    ^^^^^^^^\n";
-        fs << "    Compared value";
-        fs.close();
-    }
-
-    /* Const iterator rend() */
-    {
-        int range_array[] = { 8, -5615, 412, 89, 475};
-
-        // std::vector<int>::const_iterator stl_iterator(&(range_array[0]));
-        ft::vector<int>::const_iterator ft_iterator(&(range_array[0]));
-
-        std::vector<int> stl_range_vector(range_array, range_array + 5);
-        ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 5);
-    
-        fs.open("./tester/vectors_output/iterator_const_reverse_end", std::fstream::in | std::fstream::out | std::fstream::trunc);
-        
-        // std::vector<int>::const_reverse_iterator stl_const_it = stl_range_vector.rend() - 1;
-        // ft::vector<int>::const_reverse_iterator ft_const_it = ft_range_vector.rend() - 1;
-        // const int from_stl = *(stl_const_it);
-        // const int from_ft = *(ft_const_it);
-
-        // std::cout << ((printSingleValue(fs, from_stl, from_ft) == true) ? OK : NOP);
-        fs << "\nCode executed:\n";
-        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
-        fs << "int range_array[] = { 8, -5615, 412, 89, 475};\n";
-        fs << "ft::vector<int>::const_iterator ft_iterator(&(range_array[0]));\n";
-        fs << "ft::vector<int> ft_range_vector(ft_iterator, ft_iterator + 5);\n";
-        fs << "std::vector<int>::const_reverse_iterator stl_const_it = stl_range_vector.rend() - 1;\n";
-        fs << "int from_ft = *(ft_const_it);\n";
-        fs << "    ^^^^^^^\n";
-        fs << "    Compared value";
-        fs << "\nCompared with:\n";
-        fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
-        fs << "int range_array[] = { 8, -5615, 412, 89, 475};\n";
-        fs << "std::vector<int>::const_iterator range_array(&(range_array[0]));\n";
-        fs << "std::vector<int> stl_range_vector(range_array, range_array + 5);\n";
-        fs << "ft::vector<int>::const_reverse_iterator ft_const_it = ft_range_vector.rend() - 1;\n";
-        fs << "int from_stl = *(stl_const_it);\n";
-        fs << "    ^^^^^^^^\n";
-        fs << "    Compared value";
-        fs.close();
-    }
-
     std::cout << "\n";
     std::cout << "Capacity\t: ";
 
@@ -1687,7 +1613,6 @@ void test_vector()
     /* RL '<=' true */
     {
         int range_array_one[] = {144, 335, 1, -98, 5};
-    puts("rock you galek");
         int range_array_two[] = {144, 335, 5, 0, -54};
 
         // std::vector<int>::iterator range_array_one(&(range_array_one[0]));

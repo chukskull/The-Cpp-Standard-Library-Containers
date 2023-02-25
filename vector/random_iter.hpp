@@ -98,7 +98,7 @@ class My_iter
 			return (*ptr);
 		}
 
-		reference	operator->(){return *this->_iter;}
+		reference	operator->(){return &*this->_iter;}
 
 	 	My_iter	operator++(int)
 		{
@@ -170,7 +170,7 @@ class My_iter
 		{
 			return (obj.getPointer() - this->getPointer());
 		}
-		reference	operator*(){return *_iter;}
+		reference	operator*()const {return (*_iter);}
 
 	value_type	operator[](size_t	index)
 	{
@@ -324,9 +324,9 @@ class My_iter
 			{
 				return (obj.getPointer() - this->getPointer());
 			}
-			reference	operator*(){
+			reference	operator*() const{
 				iter tmp = _iter;
-                return (*--tmp);
+                return (*(--tmp));
 				}
 
 			value_type	operator[](size_t	index)
@@ -361,14 +361,7 @@ class My_iter
 		protected:
 			iter	_iter;
 	};
-}
-	// template<class Iterator>
-	// typename iterator_traits<Iterator>::difference_type difference_type;
-	// template <class InputIterator>
-	// typename iterator_traits<InputIterator>::difference_type
-	// difference_s(InputIterator first, InputIterator last) {
-	//   typename iterator_traits<InputIterator>::difference_type	result = last - first;
-	//   return result;}    	
+}   	
 	namespace disc
 	{
 		template<class iter>

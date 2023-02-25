@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/23 11:18:13 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/25 15:01:26 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "pair.hpp"
 #include "RBT.hpp"
 #include "bider_iterator.hpp"
+#include "../vector/lexicographical.hpp"
 
 namespace ft
 {
@@ -78,11 +79,12 @@ namespace ft
 			{
 				this->tree_.insert_iterator(first, last);
 			}
-			map(const map<Key,T,Compare,Allocator>& x):tree_(x.tree_)
+			map(const map<Key,T,Compare,Allocator>& x):tree_(value_compare(x._cmp)), _cmp(x._cmp), alloc(x.alloc)
 			{
-				this->_cmp = x._cmp;
+				this->tree_ = x.tree_;
 			}
-			~map(){};
+			~map(){
+			};
 			map<Key,T,Compare,Allocator>&
 			operator=(const map<Key,T,Compare,Allocator>& x)
 			{
@@ -243,7 +245,6 @@ namespace ft
 				const_iterator	temp = find(x);
 				if (temp != this->end())
 				{
-					std::cerr << "just why ? " << std::endl;
 					return 1;
 				}
 				return 0;
@@ -310,41 +311,50 @@ namespace ft
 		bool operator==(const map<Key,T,Compare,Allocator>& x,
 		const map<Key,T,Compare,Allocator>& y)
 		{
-			if (x.size() == y.size()){
-            	typename ft::map<Key, T, Compare, Allocator>::iterator it = x.begin();
-            	typename ft::map<Key, T, Compare, Allocator>::iterator it1 = y.begin();
-            	for(; it != x.end(), it1 != y.end(); it++ , it1++)
-            	{
-                	if (*it != *it1)
-                    	return false;
-            	}
-        	}
-			else
-            	return false;
-        	return true;
+			return x.size() == y.size() && std::equal(x.begin(), x.end(), y.begin());
 		}
+		
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator< (const map<Key,T,Compare,Allocator>& x,
 		const map<Key,T,Compare,Allocator>& y)
 		{
-			
+			return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
 		}
+		
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator!=(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+		const map<Key,T,Compare,Allocator>& y)
+		{
+			return !(x == y);
+		}
+		
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator> (const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+		const map<Key,T,Compare,Allocator>& y)
+		{
+			return y < x;
+		}
+		
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator>=(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
+		const map<Key,T,Compare,Allocator>& y)
+		{
+			return !(x < y);
+		}
+		
 		template <class Key, class T, class Compare, class Allocator>
 		bool operator<=(const map<Key,T,Compare,Allocator>& x,
-		const map<Key,T,Compare,Allocator>& y);
-		// specialized algorithms:
+		const map<Key,T,Compare,Allocator>& y)
+		{
+			return !(y < x);
+		}
+		
 		template <class Key, class T, class Compare, class Allocator>
 		void swap(map<Key,T,Compare,Allocator>& x,
-		map<Key,T,Compare,Allocator>& y);
+		map<Key,T,Compare,Allocator>& y)
+		{
+			x.swap(y);
+		}
 }
 
 

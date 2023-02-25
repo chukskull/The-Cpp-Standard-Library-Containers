@@ -19,7 +19,6 @@ std::string equalContent(
     {
         if ((*ft_it).first != (*stl_it).first || (*ft_it).second != (*stl_it).second)
             return ("✘");
-        // puts("okkokk");
         stl_it++;
     }
     return ("✔");
@@ -39,7 +38,6 @@ bool printMapAttributes(
 
     /* FT Values */
     std::string ft_empty = ((ft_map.empty() == 1) ? "true" : "false");
-    // puts("here");
     size_t ft_size = ft_map.size();
     size_t ft_max_size = ft_map.max_size();
     // puts("pure agaom");
@@ -49,7 +47,6 @@ bool printMapAttributes(
     bool size = equalbool(ft_size, stl_size);
     bool max_size = equalbool(ft_max_size, stl_max_size);
     std::string content = equalContent(stl_map, ft_map);
-    // puts("PPPP");
 
     fs << "\n══════════════════════════════════════════════════════════════\n";
     fs << "maps attributes : \n";
@@ -218,7 +215,6 @@ void test_map()
         fs << "std::map<int, std::string> stl_map_copy(stl_map);\n";
         fs.close();
     }
-
     /* Assign operator */
     {
         const int range_int[] = {478, 952, 12, -96, -9};
@@ -236,7 +232,6 @@ void test_map()
         fs.open("./tester/maps_output/operator_assign", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
         printMapAttributes(fs, stl_map, ft_map);
-        puts("khrejt");
         std::map<int, std::string> stl_map_copy = stl_map;
         ft::map<int, std::string> ft_map_copy = ft_map;
 
@@ -347,6 +342,7 @@ void test_map()
         fs.close();
     }
 
+    
     /* End */
     {
         const int range_int[] = {-99, 584, 965, 366, 77};
@@ -561,7 +557,6 @@ void test_map()
         std::map<int, std::string>::reverse_iterator stl_it = stl_map.rend();
         ft::map<int, std::string>::reverse_iterator ft_it = ft_map.rend();
 
-        std::cerr << stl_it->first << " " << ft_it->first << std::endl;
         printMapAttributes(fs, stl_map, ft_map);
 
         --stl_it;
@@ -596,7 +591,6 @@ void test_map()
 
     /* Const reverse end */
     {
-        puts("here");
         const int range_int[] = {-99, 584, 965, 366, 77};
         const std::string range_str[] = {"One", "Two", "Three", "Four", "Five"};
 
@@ -981,7 +975,6 @@ void test_map()
         fs << "stl_map.erase(stl_map.begin());\n";
         fs.close();
     }
-
     /* Erase key */
     {
         const int range_int[] = {1452, 3651, -98, 84, 899};

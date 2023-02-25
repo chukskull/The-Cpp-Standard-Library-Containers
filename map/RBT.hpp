@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/23 16:40:22 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/25 15:08:22 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,25 +42,12 @@ class Tree
 		typedef Node*			node_ptr;
 		typedef Compare			value_compare;
 		typedef typename		std::allocator<Node>		Allocator_;
+		typedef	typename		std::allocator<T>			Allocator_data;
 		typedef	typename		ft::map_iterator<T, node_ptr>	iterator;
 		typedef typename		ft::map_iterator<const T, node_ptr>	const_iterator;
 		typedef typename		ft::map_rev_iterator<iterator>	reverse_iterator;
 		typedef	typename		ft::map_rev_iterator<const iterator>	const_reverse_iterator;
-		// Tree():
-		// {
-		// 	this->naher_nill = _alloc.allocate(1);
-		// 	_alloc.construct(this->naher_nill, Node());
-		// 	this->naher_nill->data_ = data_alloc.allocate(1);
-		// 	data_alloc.construct(this->naher_nill->data_, T());
-		// 	naher_nill->color = BLCK;
-		// 	naher_nill->parent = nullptr;
-		// 	naher_nill->left = nullptr;
-		// 	naher_nill->right = nullptr;
-		// 	naher_nill->_next = nullptr;
-		// 	naher_nill->_prev = nullptr;
-		// 	this->root = naher_nill;
-		// 	this->size_ = 0;
-		// }
+		
 		Tree(const value_compare &comp):_comp(comp)
 		{
 			this->size_ = 0;
@@ -76,19 +63,18 @@ class Tree
 			naher_nill->_next = nullptr;
 			naher_nill->_prev = nullptr;
 		}
-		// constructor to initialize data_ and pointers
-		// Tree(T *data) : data_(data){};
-		// Tree(const Tree	&x)
-		// {
-		// 	if (this != &x)
-		// 	{
-		// 		this->root = x.root;
-		// 		_comp(x._comp);
-		// 		this->_alloc = x._alloc;
-		// 		this->naher_nill = x.naher_nill;
-		// 		naher_nill->color = BLCK;
-		// 	}
-		// }
+		~Tree()
+		{
+			this->clear();
+		}
+		Tree	&operator=(const Tree &x)
+		{
+			this->clear_tree(this->root);
+			this->size_ = 0;
+			this->root = naher_nill;
+			this->insert_iterator(x.get_value_begin(), x.get_value_end());
+			return *this;
+		}
 
 		node_ptr	successor(node_ptr	node)
 		{
@@ -146,7 +132,6 @@ class Tree
 		{
 			node_ptr	y = x->left;
 
-			// cerr <<"this is the data" <<x->data_ << endl;
 			x->left = y->right;
 			if (y->right != naher_nill)
 				y->right->parent = x;
@@ -377,11 +362,12 @@ class Tree
 			{
 				RB_deletion_Fixup(x);
 			}
+			data_alloc.destroy(z->data_);
+			data_alloc.deallocate(z->data_,  1);
 			_alloc.destroy(z);
 			_alloc.deallocate(z, 1);
 			z = nullptr;
 			this->size_--;
-			// delete z;
 		}
 		//case 1: if uncle is red we are just recoloring the parent and uncle as a BLCK and grand parent as black and set elem to grand_parent because his red xD
 
@@ -390,7 +376,7 @@ class Tree
 			//
 			node_ptr	y = naher_nill;
 			node_ptr	tmp = root;
-			Node	*new_ele = _alloc.allocate(1);
+			node_ptr	new_ele = _alloc.allocate(1);
 			_alloc.construct(new_ele, Node());
 			new_ele->data_ = data_alloc.allocate(1);
 			data_alloc.construct(new_ele->data_, data);
@@ -422,14 +408,10 @@ class Tree
             this->naher_nill->_prev = maximum(this->root);
 			this->naher_nill->_prev->_next = naher_nill;
             this->naher_nill->_next = nullptr;
+			this->naher_nill->left = nullptr;
 			new_ele->color = RED;
 			this->size_++;
-			// std::cout << new_ele->data_->first << " " << "prev = " << new_ele->_prev->data_->first << " next = " << new_ele->_next->data_->first << std::endl;
-			// getchar(); 
 			RB_insert_Fixup(new_ele);
-			// std::cout << "--------" << std::endl;
-			// this->print2D();
-			// std::cout << "--------" << std::endl;
 			return iterator(new_ele);
 		}
 		template<class iterator>
@@ -510,45 +492,70 @@ class Tree
 			}
 			return iterator(this->naher_nill);
 		}
-	void print2DUtil(node_ptr root, int space)
-	{
-		// Base case
-	
-		// Increase distance between levels
-		space += COUNT;
-	
-		if (root == nullptr)
+		void	clear_tree(node_ptr &head)
 		{
-			return;
+			// print2D();
+			if (head == naher_nill)
+				return ;
+			clear_tree(head->left);
+			clear_tree(head->right);
+			data_alloc.destroy(head->data_);
+			data_alloc.deallocate(head->data_, 1);
+			_alloc.destroy(head);
+			_alloc.deallocate(head, 1);
+			head = nullptr;
 		}
-		// Process right child first
-		print2DUtil(root->right, space);
+		void	clear()
+		{
+			clear_tree(this->root);
+			data_alloc.destroy(this->naher_nill->data_);
+			data_alloc.deallocate(this->naher_nill->data_, 1);
+			_alloc.destroy(this->naher_nill);
+			_alloc.deallocate(this->naher_nill, 1);
+			naher_nill = nullptr;
+			this->size_ = 0;
+		}
+		//tools i debug 
+
+	// void print2DUtil(node_ptr root, int space)
+	// {
+	// 	// Base case
 	
-		// Print current node after space
-		// count
+	// 	// Increase distance between levels
+	// 	space += COUNT;
 	
-		printf("\n");
-		for (int i = COUNT; i < space; i++)
-			printf(" ");
-		if (root->color == RED)
-			std::cout << "\033[1;31m" << root->data_->first  << "\033[0m" << std::endl;
-		else if (root->color == BLCK && root != naher_nill)
-			std::cerr << "\033[1;34m" << root->data_->first  << "\033[0m" << std::endl;
-		else
-			std::cerr << "nil" << std::endl;
-		print2DUtil(root->left, space);
-	}
+	// 	if (root == nullptr)
+	// 	{
+	// 		return;
+	// 	}
+	// 	// Process right child first
+	// 	print2DUtil(root->right, space);
+	
+	// 	// Print current node after space
+	// 	// count
+	
+	// 	printf("\n");
+	// 	for (int i = COUNT; i < space; i++)
+	// 		printf(" ");
+	// 	if (root->color == RED)
+	// 		std::cout << "\033[1;31m" << root->data_->first  << "\033[0m" << std::endl;
+	// 	else if (root->color == BLCK && root != naher_nill)
+	// 		std::cerr << "\033[1;34m" << root->data_->first  << "\033[0m" << std::endl;
+	// 	else
+	// 		std::cerr << "nil" << std::endl;
+	// 	print2DUtil(root->left, space);
+	// }
 	
 	
-	void print2D()
-	{
-	   // Pass initial space count as 0
-	   print2DUtil(root, 0);
-	}
+	// void print2D()
+	// {
+	//    // Pass initial space count as 0
+	//    print2DUtil(root, 0);
+	// }
 	protected:
 		size_t				size_;
 		Allocator_			_alloc;
-		Allocator			data_alloc;
+		Allocator_data		data_alloc;
 		node_ptr			root;
 		node_ptr 			naher_nill;
 		value_compare		_comp;
@@ -556,99 +563,5 @@ class Tree
 	};
 
  }
-
-
-// void    inorder_tree(Tree   *&head)
-// {
-// 	if (head == naher_nill)
-// 		return ;
-// 	inorder_tree(head->left);
-// 	cerr << head->data_ << " " << head->color << endl;
-// 	inorder_tree(head->right);
-// 	// delete head;
-// }
-
-// Tree    *get_parent(Tree *head, int value)
-// {
-// 	if (head == naher_nill)
-// 		return naher_nill;
-// 	if ((head->left != naher_nill && head->left->data_ == value) || (head->right != naher_nill && head->right->data_ == value))
-// 		return head;
-// 	if (value < head->data_)
-// 		return get_parent(head->left, value);
-// 	else
-// 		return get_parent(head->right, value);
-// }
-
-
-// int main()
-// {
-// 	Tree    *head;
-// 	Tree   *nill;
-// 	head = naher_nill;
-
-// 	int     value = 18;
-// 	insert(head, new Tree(1));
-// 	insert(head, new Tree(2));
-// 	insert(head, new Tree(3));
-// 	insert(head, new Tree(4));
-// 	insert(head, new Tree(5));
-// 	insert(head, new Tree(6));
-// 	insert(head, new Tree(7));
-// 	insert(head, new Tree(8));
-// 	insert(head, new Tree(9));
-// 	insert(head, new Tree(10));
-// 	insert(head, new Tree(11));
-// 	insert(head, new Tree(12));
-// 	// insert(head, new Tree(13));
-// 	delete_(head, 4);
-// 	delete_(head, 5);
-// 	delete_(head, 6);
-// 	delete_(head, 10);
-// 	delete_(head, 7);
-// 	// delete_(head, 7);
-// 	// delete_(head, 5);
-// 	// // print2D(head);
-// 	// delete_(head, 8);
-// 	// print2D(head);
-// 	// delete_(head, 7);
-// 	print2D(head);
-// 	// delete_(head, 4);
-// 	// delete_(head, 4);
-// 	// delete_(head, 4);
-// 	// delete_(head, 4);
-// 	// delete_(head, 8);
-// 	// print2D(head);
-
-// 	// Tree    *new_elem = new Tree(value);
-// 	// insert(head, new_elem);
-// 	// Tree    *ybncl = new Tree(69);
-// 	// insert(head, ybncl);
-// 	// Tree    *helmakh = new Tree(9);
-// 	// insert(head, helmakh);
-
-// 	// Tree    *snagat = new Tree(12);
-// 	// insert(head, snagat);
-// 	// Tree    *lol3 = new Tree(11);
-// 	// insert(head, lol3);
-// 	// print2D(head);
-// 	// delete_(head, lol3);
-// 	// Tree    *lol = new Tree(99);
-// 	// insert(head, lol);
-// 	// Tree    *lol2 = new Tree(55);
-// 	// insert(head, lol2);
-// 	// Tree *karafi = new Tree(21);
-// 	// insert(head, karafi);
-// 	// Tree *karafi2 = new Tree(25);
-// 	// insert(head, karafi2);
-// 	// Tree *karafi3 = new Tree(22);
-// 	// insert(head, karafi3);
-// 	// print2D(head);
-// 	// inorder_tree(head);
-// 	// delete_(head, new_elem);
-
-// 	return 0;
-// }
-
 
 #endif

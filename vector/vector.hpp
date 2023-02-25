@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/24 17:25:56 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/25 15:10:37 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "lexicographical.hpp"
 #include <type_traits>
 #include <algorithm>
+#include <map>
 
 namespace ft {
 template <class T, class Allocator = std::allocator<T> >
@@ -101,7 +102,10 @@ public:
 		}
 		_alloc.deallocate(arr, this->capacity());
 	}
-	vector<T,Allocator>& operator=(const vector<T,Allocator>& x);
+	vector<T,Allocator>& operator=(const vector<T,Allocator>& x)
+	{
+		
+	}
 	
 	template <class InputIterator>
 	void assign(typename enable_if<!std::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
@@ -166,10 +170,6 @@ public:
 	iterator begin(){
 		return iterator(&this->arr[0]);
 	}
-	// reverse_iterator	rbegin()
-	// {
-	// 	return reverse_iterator(&this->arr[size()]);
-	// }
 
 	reverse_iterator	rend()
 	{
@@ -199,12 +199,6 @@ public:
 	{
 		return const_reverse_iterator(&this->arr[size()]);
 	}
-	
-	// reverse_iterator rend()
-	// {
-	// 	return reverse_iterator(&this->arr[size()]);
-	// }
-		
 	
 	const_reverse_iterator rend() const
 	{
@@ -380,10 +374,6 @@ public:
 		}
 		iterator lol = iterator(&arr[i]);
 		arr[i] = x;
-		for(int i = 0; i < size(); i++)
-		{
-			std::cerr << arr[i] << std::endl;
-		}
 		this->Capacity = old_cp * 2;
 		return lol;
 
@@ -493,45 +483,6 @@ public:
 		}
 		this->Size = 0;
 	}
-
-		// if (capacity() == 0)
-		// {
-		// 	this->Capacity = 1;
-		// 	this->arr = _alloc.allocate(1);
-
-		// }
-		// if (size() == capacity())
-		// {
-		// 	this->Capacity = this->Capacity * 2;
-		// 	value_type		*temp;
-		// 	iterator		iter = this->begin();
-		// 	temp = arr;
-		// 	int		i;
-		// 	i = 0;
-		// 	arr = _alloc.allocate(capacity());
-		// 	this->Size++;
-		// 	while (iter < this->end())
-		// 	{
-		// 		_alloc.construct(&arr[i], *iter);
-		// 		iter++;
-		// 		/* code */
-		// 	}
-			
-		// 	for (size_t i = 0; i < size(); i++)
-		// 	{
-		// 		_alloc.destroy(&temp[i]);
-		// 	}
-		// 	_alloc.deallocate(temp, this->capacity());
-		// }
-	
-	// void insert(iterator position, size_type n, const T& x);
-	
-	// template <class InputIterator>
-	// void insert(iterator position,
-	// InputIterator first, InputIterator last);
-	// iterator erase(iterator position);
-	
-	// iterator erase(iterator first, iterator last);
 	
 	void swap(vector<T,Allocator> &x)
 	{
@@ -563,18 +514,7 @@ template<class _Tp, class _Allocator>
 bool
 operator==(const vector<_Tp, _Allocator>& __x, const vector<_Tp, _Allocator>& __y)
 {
-    const typename vector<_Tp, _Allocator>::size_type __sz = __x.size();
-   	if (__sz == __y.size())
-   	{
-		for(typename vector<_Tp, _Allocator>::size_type i = 0; i < __sz; i++)
-		{
-			if(__x[i] != __y[i])
-				return false;
-		}
-   	}
-	else
-		return false;
-	return true;
+	return __x.size() == __y.size() && std::equal(__x.begin(), __x.end(), __y.begin());
 }
 
 template<class _Tp, class _Allocator>

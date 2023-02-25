@@ -15,9 +15,10 @@ int main()
 {
     test_vector();
     std::cout << "\n";
+    // while(1){};
      test_map();
      std::cout << "\n";
+     system("leaks a.out");
     // test_stack();
     // std::cout << "\n";
-    // while(1);
 }
