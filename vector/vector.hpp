@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/25 15:10:37 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/25 15:13:40 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,7 +296,12 @@ public:
 	}
 
 	
-	const_reference at(size_type n) const;
+	const_reference at(size_type n) const
+	{
+		if (n >= this->size())
+			throw std::out_of_range("out of range");
+		return (this->arr[n]);
+	}
 	
 	reference at(size_type n){
 		if (n >= this->size())

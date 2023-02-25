@@ -19,6 +19,6 @@ int main()
      test_map();
      std::cout << "\n";
      system("leaks a.out");
-    // test_stack();
-    // std::cout << "\n";
+    test_stack();
+    std::cout << "\n";
 }
