@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/25 15:13:40 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/28 19:57:31 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,19 @@ public:
 	}
 	vector<T,Allocator>& operator=(const vector<T,Allocator>& x)
 	{
-		
+		if(this != &x)
+		{
+			_alloc.deallocate(arr, this->capacity());
+			_alloc = x._alloc;
+			arr = this->_alloc.allocate(x.size());
+			Capacity = x.Capacity;
+			Size = x.Size;
+			for(size_type i = 0; i < x.size(); i++)
+			{
+				this->_alloc.construct(&arr[i], x.arr[i]);
+			}
+		}
+		return *this;
 	}
 	
 	template <class InputIterator>
@@ -219,7 +231,7 @@ public:
 	{
 		if (sz < size())
 		{
-			for (int i = sz - 1; i < size(); i++)
+			for (size_type i = sz - 1; i < size(); i++)
 			{
 				_alloc.destroy(&arr[i]);
 			}
@@ -227,7 +239,7 @@ public:
 		}
 		else if (sz < capacity() && sz > size())
 		{
-			for(int i = size() - 1; i < sz; i++)
+			for(size_type i = size() - 1; i < sz; i++)
 			{
 				if ( i >= sz )
 				{
@@ -240,7 +252,7 @@ public:
 		{
 			value_type	*tmp = arr;
 			arr = _alloc.allocate(sz);
-			for(int i = 0; i < sz; i++)
+			for(size_type i = 0; i < sz; i++)
 			{
 				if (i >= size())
 				{
@@ -273,7 +285,7 @@ public:
 		value_type	*tmp = arr;
 
 		arr = _alloc.allocate(n);
-		for(int i = 0 ; i < size(); i++)
+		for(size_type i = 0 ; i < size(); i++)
 		{
 			_alloc.destroy(&arr[i]);
 			_alloc.construct(&arr[i], tmp[i]);
@@ -325,19 +337,20 @@ public:
 	// 23.2.4.3 modifiers:
 	void push_back(const T& x)
 	{
+		value_type	old_ca = capacity();
 		if (capacity() == 0)
 		{
 			this->Capacity = 1;
-			this->arr = _alloc.allocate(1);
-
+			if (arr == NULL)
+				arr = _alloc.allocate(1);
 		}
-		if (size() == capacity())
+		else if (size() >= capacity())
 		{
 			this->Capacity = this->Capacity * 2;
 			value_type		*temp;
 			temp = arr;
 			arr = _alloc.allocate(capacity());
-			for(int i = 0; i < size(); i++)
+			for(size_type i = 0; i < size(); i++)
 			{
 				_alloc.construct(&arr[i], temp[i]);
 			}
@@ -345,9 +358,10 @@ public:
 			{
 				_alloc.destroy(&temp[i]);
 			}
-			_alloc.deallocate(temp, this->capacity());
+			_alloc.deallocate(temp, old_ca);
 		}
-		_alloc.construct(&arr[this->size()], x);
+		if(this->Capacity > 0)
+			_alloc.construct(&arr[this->size()], x);
 		this->Size++;
 	}
 	void pop_back(){
@@ -366,7 +380,7 @@ public:
 			count++;
 			it++;
 		}
-		int i = 0;
+		size_type i = 0;
 		if (size() + 1 > capacity())
 			resize(size() + 1);
 		else
@@ -387,67 +401,59 @@ public:
 	
 	void	insert(iterator position, size_type n, const value_type& val)
 	{
-		int count = 0;
+		difference_type count = TheDistance(this->begin(), position);
 		iterator	iter = this->begin();
-		while(iter != position)
-		{
-			count++;
-			iter++;
-		}
-		int s = 0;
+		size_type s = 0;
+		size_t curr_size = this->size();
 		if (size() + n > capacity())
 			resize(size() + n);
 		else
 			this->Size += n;
-		s = size() - 1;
-		while (s > count)
+		s = curr_size - 1;
+		while (s   >=  (count))
 		{
-			arr[s] = arr[s - n];
+			arr[s +  (n)] = arr[s];
 			s--;
 		}
-		int count_2 = 0;
+		// getchar();
+		size_type count_2 = 0;
 		while (count_2 < n)
 		{
-			arr[s] = val;
+			arr[count] = val;
 			count_2++;
-			s++;
+			count++;
 		}
 	}
 	template<class InputIterator>
 	void	insert(iterator position, typename enable_if<!std::is_integral<InputIterator>::value , InputIterator>::type first, InputIterator last)
 	{
-		int count = 0;
-		iterator	iter = this->begin();
-		while(iter != position)
-		{
-			count++;
-			iter++;
-		}
-		difference_type distance = abs(TheDistance(first, last));
-		int	s = 0;
+		difference_type count = abs(TheDistance(this->begin(), position));
+		difference_type distance = first - last;
+		size_type	curr_size = this->size();
+		size_type	s = 0;
 		if (size() + distance > capacity())
 			resize(size() + distance);
 		else
 			this->Size += distance;
-		s = size() - 1;
-		while (s > count)
+		s = curr_size - 1;
+		while (s  >= count)
 		{
-			arr[s] = arr[s - distance];
+			arr[s + distance] = arr[s];
 			s--;
 		}
-		int count_2 = 0;
-		while (count_2 < distance)
+		size_type count_2 = 0;
+		while (count_2 < distance && first != last)
 		{
-			arr[s] = *first;
+			arr[count] = *first;
 			count_2++;
-			s++;
+			count++;
 			first++;
 		}
 	}
 	
 	iterator	erase(iterator position)
 	{
-		int count = 0;
+		size_type count = 0;
 		iterator	it = this->begin();
 		while(it != position)
 		{
@@ -464,7 +470,7 @@ public:
 	}
 	iterator	erase(iterator	first, iterator	last)
 	{
-		int count = 0;
+		size_type count = 0;
 		difference_type	d = abs(TheDistance(last, first));
 		iterator	it = this->begin();
 		while(it != first)
@@ -482,7 +488,7 @@ public:
 	}
 	void	clear()
 	{
-		for(int i = 0; i < size(); i++)
+		for(size_type i = 0; i < size(); i++)
 		{
 			_alloc.destroy(&arr[i]);
 		}

@@ -32,6 +32,7 @@ namespace ft {
 			con = rh.con;
 			return *this;
 		}
+		
 		bool empty() const { return con.empty(); }
 		size_type size()  const { return con.size(); }
 

@@ -128,15 +128,10 @@ class My_iter
 			return	*this;
 		}
 
-		reference	operator+=(const difference_type	&m)
+		My_iter	operator+=(const difference_type	&m)
 		{
-			if (m >= 0 )
-				while(m--)
-					++this->_iter;
-			else
-				while(m++)
-					--this->_iter;
-			return *this;		
+			_iter += m;
+			return *this;	
 		}
 
 		My_iter	&operator-=(const difference_type	&m)
@@ -301,7 +296,7 @@ class My_iter
 
 			reverse_iterator	operator+(const difference_type	&m)
 			{
-				pointer	store;
+				iter	store;
 
 				store = _iter;
 				_iter += m;

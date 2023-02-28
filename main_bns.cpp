@@ -1,5 +1,7 @@
+
 #include <iostream>
 # include "tester/tester.hpp"
+# include "set/set.hpp"
 
 bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool)
 {
@@ -13,12 +15,5 @@ bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool)
 
 int main()
 {
-    test_vector();
-    std::cout << "\n";
-    // while(1){};
-     test_map();
-     std::cout << "\n";
-    test_stack();
-    std::cout << "\n";
-     system("leaks a.out");
+    test_set();
 }

@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/25 15:08:22 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/26 21:03:12 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,6 +255,18 @@ class Tree
 			return curr;
 		}
 
+		node_ptr	search_node_set(key_type key)
+		{
+			node_ptr	curr = root;
+			while(curr != naher_nill && key != *(curr->data_))
+			{
+				if (key < *(curr->data_))
+					curr = curr->left;
+				else
+					curr = curr->right;
+			}
+			return curr;
+		}
 		Node   *maximum(node_ptr nax)
 		{
 			node_ptr	curr = nax;
@@ -369,6 +381,55 @@ class Tree
 			z = nullptr;
 			this->size_--;
 		}
+		void    delete_set(key_type key)
+		{
+			node_ptr	y;
+			node_ptr	x;
+			int     color;
+
+			node_ptr	z = search_node_set(key);
+			z->_prev->_next = z->_next;
+			z->_next->_prev = z->_prev;
+			y = z;
+			color = y->color;
+			if(z->left == naher_nill)
+			{
+				x = z->right;
+				transpant_algo(z, z->right);
+			}
+			else if (z->right == naher_nill)
+			{
+				x = z->left;
+				transpant_algo(z, z->left);
+			}
+			else{
+				node_ptr	y = minimum(z->right);
+				color = y->color;
+				x = y->right;
+				if (y->parent == z)
+					x->parent = y;
+				else
+				{
+					transpant_algo(y, y->right);
+					y->right = z->right;
+					y->right->parent = y; 
+				}
+				transpant_algo(z, y);
+				y->left = z->left;
+				y->left->parent = y;
+				y->color = z->color;
+			}
+			if (color == BLCK)
+			{
+				RB_deletion_Fixup(x);
+			}
+			data_alloc.destroy(z->data_);
+			data_alloc.deallocate(z->data_,  1);
+			_alloc.destroy(z);
+			_alloc.deallocate(z, 1);
+			z = nullptr;
+			this->size_--;
+		}
 		//case 1: if uncle is red we are just recoloring the parent and uncle as a BLCK and grand parent as black and set elem to grand_parent because his red xD
 
 		iterator    insert(const T	 data)
@@ -433,6 +494,17 @@ class Tree
 				first = temp;
 		   }
 		}
+		template<class iterator>
+		void	erase_iterators_sets(iterator first, iterator last)
+		{
+			iterator temp = first;
+           for(; first != last;)
+		   {
+				temp++;
+				delete_set(*first);
+				first = temp;
+		   }
+		}
 		iterator	get_value_begin() const
 		{
 			node_ptr temp = minimum(this->root);
@@ -478,6 +550,20 @@ class Tree
 			return this->size_;
 		}
 
+		iterator	find_set(const	key_type &key)const
+		{
+			node_ptr	curr = this->root;
+			for(;curr && curr != naher_nill;)
+			{
+				if (*(curr->data_) == key)
+					return iterator(curr);
+				if (_comp(key,  *(curr->data_)))
+					curr = curr->left;
+				else
+					curr = curr->right;
+			}
+			return iterator(this->naher_nill);
+		}
 		iterator	find_pair(const	key_type &key)const
 		{
 			node_ptr	curr = this->root;
