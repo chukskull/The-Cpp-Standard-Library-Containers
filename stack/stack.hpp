@@ -29,7 +29,10 @@ namespace ft {
 		}
 		stack &operator=(const	stack &rh)
 		{
-			con = rh.con;
+			if (this != &rh)
+			{
+				con = rh.con;
+			}
 			return *this;
 		}
 		

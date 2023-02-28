@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/28 19:57:31 by snagat           ###   ########.fr       */
+/*   Updated: 2023/02/28 22:40:15 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,7 +337,7 @@ public:
 	// 23.2.4.3 modifiers:
 	void push_back(const T& x)
 	{
-		value_type	old_ca = capacity();
+		size_type	old_ca = capacity();
 		if (capacity() == 0)
 		{
 			this->Capacity = 1;
