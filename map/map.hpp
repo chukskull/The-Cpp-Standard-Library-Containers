@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/01 13:32:19 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 20:27:01 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ namespace ft
 			map(InputIterator first, InputIterator last,
 			const Compare& comp = Compare(), const Allocator& alloc_= Allocator()):tree_(value_compare(comp)), _cmp(comp), alloc(alloc_)
 			{
-				this->tree_.insert_iterator(first, last);
+				tree_.insert_iterator(first, last);
 			}
 			map(const map<Key,T,Compare,Allocator>& x):tree_(value_compare(x._cmp)), _cmp(x._cmp), alloc(x.alloc)
 			{
@@ -214,7 +214,15 @@ namespace ft
 			template <class InputIterator>
 			void insert(InputIterator first, InputIterator last)
 			{
-				this->tree_.insert_iterator(first, last);
+				while(first != last)
+				{
+					if (find(first->first) == this->end())
+					{
+						tree_.insert(*first);
+					}
+					first++;
+				}
+				// this->tree_.insert_iterator(first, last);
 			}
 			void erase(iterator position)
 			{

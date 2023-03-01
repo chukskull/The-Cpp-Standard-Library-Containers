@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/26 21:03:12 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 20:27:57 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -467,7 +467,7 @@ class Tree
             new_ele->_prev->_next = new_ele;
             new_ele->_next->_prev = new_ele;
             this->naher_nill->_prev = maximum(this->root);
-			this->naher_nill->_prev->_next = naher_nill;
+			// this->naher_nill->_prev->_next = naher_nill;
             this->naher_nill->_next = nullptr;
 			this->naher_nill->left = nullptr;
 			new_ele->color = RED;
