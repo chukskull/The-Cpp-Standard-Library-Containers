@@ -16,4 +16,5 @@ bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool)
 int main()
 {
     test_set();
+    system("leaks a.out");
 }

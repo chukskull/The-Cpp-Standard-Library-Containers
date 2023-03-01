@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/01 12:57:33 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 14:08:46 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <vector>
 #include "random_iter.hpp"
 #include "lexicographical.hpp"
+#include "is_integral.hpp"
 #include <type_traits>
 #include <algorithm>
 #include <map>
@@ -67,7 +68,7 @@ public:
 		this->Capacity = n;
 	}
 	template<class InputIterator>
-  	vector(typename enable_if<!std::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last,
+  	vector(typename enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last,
 	const Allocator& = Allocator())
 	{
 		difference_type	length;
@@ -120,7 +121,7 @@ public:
 	}
 	
 	template <class InputIterator>
-	void assign(typename enable_if<!std::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
+	void assign(typename enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 	{
 		size_type	tmp;
 		size_type	old_cap;
@@ -425,7 +426,7 @@ public:
 		}
 	}
 	template<class InputIterator>
-	void	insert(iterator position, typename enable_if<!std::is_integral<InputIterator>::value , InputIterator>::type first, InputIterator last)
+	void	insert(iterator position, typename enable_if<!ft::is_integral<InputIterator>::value , InputIterator>::type first, InputIterator last)
 	{
 		difference_type count = abs(TheDistance(this->begin(), position));
 		difference_type distance = first - last;
@@ -453,14 +454,7 @@ public:
 	
 	iterator	erase(iterator position)
 	{
-		// size_type count = 0;
 		size_type	curr_pos = abs(this->begin() - position);
-		// iterator	it = this->begin();
-		// while(it != position)
-		// {
-		// 	count++;
-		// 	it++;
-		// }
 		resize(size() - 1);
 		while(curr_pos < size())
 		{

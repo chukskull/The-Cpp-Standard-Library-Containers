@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 18:54:55 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/01 13:36:01 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 13:48:50 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ namespace ft
 
         typedef Compare key_compare;
 
-        // typedef Compare value_compare;
 
         typedef Allocator allocator_type;
 
@@ -59,7 +58,6 @@ namespace ft
 		typedef typename My_Tree::iterator   						iterator; // See 23.1
 		typedef typename My_Tree::const_iterator					const_iterator; // See 23.1
 		typedef typename std::size_t								size_type; //See 23.1
-		// typedef     difference_type;// See 23.1
 		typedef typename Allocator::pointer pointer;
 		typedef	typename	My_Tree::reverse_iterator	reverse_iterator;
 		typedef typename	My_Tree::const_reverse_iterator	const_reverse_iterator;
@@ -139,20 +137,20 @@ namespace ft
 				return tree_.get_value_end_const_rev();
 			}
         // capacity:
-            T&	at(const key_type &x)
+            key_type&	at(const key_type &x)
 		    {
 		    	iterator	tmp = find(x);
 		    	if (tmp != this->end())
 		    		return tmp->second;
-		    	ft::pair<iterator, bool> lol = insert(ft::make_pair(x, T()));
+		    	ft::pair<iterator, bool> lol = insert(ft::make_pair(x, key_type()));
 		    	throw std::out_of_range("out of range");
 		    }
-		    const T& at(const	key_type &x) const
+		    const key_type& at(const	key_type &x) const
 		    {
 		    	iterator	tmp = find(x);
 		    	if (tmp != this->end())
 		    		return tmp->second;
-		    	ft::pair<iterator, bool> lol = insert(ft::make_pair(x, T()));
+		    	ft::pair<iterator, bool> lol = insert(ft::make_pair(x,  key_type()));
 		    	throw std::out_of_range("out of range");
 		    }
         bool empty() const
