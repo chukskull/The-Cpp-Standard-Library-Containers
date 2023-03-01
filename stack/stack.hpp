@@ -19,7 +19,7 @@ namespace ft {
 	protected:
 		container_type	con;
 	public:
-		explicit stack(const Container& c= Container()):con()
+		explicit stack(const Container& c= Container()):con(c)
 		{
 
 		}
@@ -52,6 +52,7 @@ namespace ft {
 	bool operator==(const stack<T, Container>& x,
 	const stack<T, Container>& y)
 	{
+		std::cerr << "why ?" << std::endl;
 		return x.con == y.con;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/28 22:40:15 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 12:57:33 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -453,20 +453,21 @@ public:
 	
 	iterator	erase(iterator position)
 	{
-		size_type count = 0;
-		iterator	it = this->begin();
-		while(it != position)
-		{
-			count++;
-			it++;
-		}
+		// size_type count = 0;
+		size_type	curr_pos = abs(this->begin() - position);
+		// iterator	it = this->begin();
+		// while(it != position)
+		// {
+		// 	count++;
+		// 	it++;
+		// }
 		resize(size() - 1);
-		while(count < size())
+		while(curr_pos < size())
 		{
-			arr[count] = arr[count + 1];
-			count++;
+			arr[curr_pos] = arr[curr_pos + 1];
+			curr_pos++;
 		}
-		return it;
+		return position;
 	}
 	iterator	erase(iterator	first, iterator	last)
 	{

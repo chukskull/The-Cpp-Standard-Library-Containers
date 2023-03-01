@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/27 18:02:38 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 13:32:19 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,22 @@ namespace ft
 					return tmp->second;
 				ft::pair<iterator, bool> lol = insert(ft::make_pair(x, T()));
 				return lol.first->second;
+			}
+			T&	at(const key_type &x)
+			{
+				iterator	tmp = find(x);
+				if (tmp != this->end())
+					return tmp->second;
+				ft::pair<iterator, bool> lol = insert(ft::make_pair(x, T()));
+				throw std::out_of_range("out of range");
+			}
+			const T& at(const	key_type &x) const
+			{
+				iterator	tmp = find(x);
+				if (tmp != this->end())
+					return tmp->second;
+				ft::pair<iterator, bool> lol = insert(ft::make_pair(x, T()));
+				throw std::out_of_range("out of range");
 			}
 			// modifiers:
 			pair<iterator, bool> insert(const value_type& x)

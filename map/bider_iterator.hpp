@@ -99,6 +99,11 @@ class map_iterator
 				// std::cout << this->_iter->data_ << std::endl;
 				return this->_iter->data_;
 				}
+			type_pointer		operator->() const{ 
+				
+				// std::cout << this->_iter->data_ << std::endl;
+				return this->_iter->data_;
+				}
 
 			map_iterator	operator++(int)
 			{

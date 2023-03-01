@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 18:54:55 by snagat            #+#    #+#             */
-/*   Updated: 2023/02/27 17:13:37 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 13:36:01 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,22 @@ namespace ft
 				return tree_.get_value_end_const_rev();
 			}
         // capacity:
+            T&	at(const key_type &x)
+		    {
+		    	iterator	tmp = find(x);
+		    	if (tmp != this->end())
+		    		return tmp->second;
+		    	ft::pair<iterator, bool> lol = insert(ft::make_pair(x, T()));
+		    	throw std::out_of_range("out of range");
+		    }
+		    const T& at(const	key_type &x) const
+		    {
+		    	iterator	tmp = find(x);
+		    	if (tmp != this->end())
+		    		return tmp->second;
+		    	ft::pair<iterator, bool> lol = insert(ft::make_pair(x, T()));
+		    	throw std::out_of_range("out of range");
+		    }
         bool empty() const
         {
             if (tree_.size())
@@ -252,7 +268,6 @@ namespace ft
 			}
 			return this->end();
         }
-        
         pair<iterator,iterator> equal_range(const key_type& x)
         {
             return ft::make_pair(lower_bound(x), upper_bound(x));
