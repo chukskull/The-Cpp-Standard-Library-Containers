@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/01 14:08:46 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/01 20:45:48 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,8 @@ public:
 		{
 			_alloc.destroy(&arr[i]);
 		}
-		_alloc.deallocate(arr, this->capacity());
+		if (this->arr != NULL)
+			_alloc.deallocate(arr, this->capacity());
 	}
 	vector<T,Allocator>& operator=(const vector<T,Allocator>& x)
 	{

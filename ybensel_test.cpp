@@ -349,8 +349,8 @@ void vec_tests()
 	std::cout << "size : " << vec.size() << "     capacity : " << vec.capacity() << std::endl;
 	std::cout << "---------------------------------------------------" << std::endl;
 	breakFunc();
-	std::cout << "inserting at postion 3 , 5 elements of value : 42 " << std::endl;
-	vec.insert(vec.begin(), 5 , 42);
+	std::cout << "inserting at postion 3 , 5 elements of value : 42 nMACARENA " << std::endl;
+	vec.insert(vec.begin() + 1, 5 , 42);
 	for (it  = vec.begin() ; it != vec.end() ;it++){
 		std::cout << "["  << *it << "]" ;
 	}
