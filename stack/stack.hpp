@@ -52,7 +52,6 @@ namespace ft {
 	bool operator==(const stack<T, Container>& x,
 	const stack<T, Container>& y)
 	{
-		std::cerr << "why ?" << std::endl;
 		return x.con == y.con;
 	}
 

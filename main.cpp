@@ -20,5 +20,5 @@ int main()
      std::cout << "\n";
     test_stack();
     std::cout << "\n";
-     system("leaks a.out");
+    //  system("ft_container");
 }

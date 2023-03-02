@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/01 20:27:01 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/02 09:08:58 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,12 +201,11 @@ namespace ft
 			
 			iterator insert(iterator position, const value_type& x)
 			{
-				(void)position;
 				iterator	new_one = find(x.first);
 				if (new_one == this->end())
 				{
 					tree_.insert(x);
-					return find(x.first);
+					return position;
 				}
 				return new_one;
 			}

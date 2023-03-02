@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 18:54:55 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/01 13:48:50 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/02 09:27:53 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,12 +181,11 @@ namespace ft
 
         iterator insert(iterator position, const value_type& x)
         {
-            (void)position;
 			iterator	new_one = find(x);
 			if (new_one == this->end())
 			{
 				tree_.insert(x);
-				return find(x);
+				return position;
 			}
 			return new_one;
         }
@@ -194,7 +193,15 @@ namespace ft
         template <class InputIterator>
         void insert(InputIterator first, InputIterator last)
         {
-            this->tree_.insert_iterator(first, last);
+            
+            while (first != last)
+            {
+                if (find(*first) == this->end())
+                {
+                    tree_.insert(*first);
+                }
+                first++;
+            }
         }
         void erase(iterator position)
         {

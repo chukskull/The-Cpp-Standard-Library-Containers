@@ -11,7 +11,6 @@ template<class T>
 struct is_integral
 {
     static const bool value;
-
 };
 
 template <class T>
