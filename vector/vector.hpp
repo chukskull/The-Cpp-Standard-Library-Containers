@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 11:20:08 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/02 09:43:53 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/02 13:35:50 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ public:
 	
 	typedef reverse_iterator<iterator> reverse_iterator;
 	typedef ft::reverse_iterator<const iterator> const_reverse_iterator;
-	explicit vector(const Allocator& alloc = Allocator())
+	explicit vector(const Allocator& alloc = Allocator()):_alloc(alloc)
 	{
 		this->arr = NULL;
 		this->Capacity = 0;
@@ -57,7 +57,7 @@ public:
 	}
 	
 	explicit vector(size_type n, const value_type& value = value_type(),
-	const Allocator& alloc = Allocator())
+	const Allocator& alloc = Allocator()):_alloc(alloc)
 	{
 		this->arr = _alloc.allocate(n);
 		for(size_type i = 0; i < n; i++)
@@ -75,7 +75,7 @@ public:
 
 		length = TheDistance(first, last);
 		this->arr = _alloc.allocate(abs(length));
-		for(size_t i = 0; i < length; i++)
+		for(size_t i = 0; i < static_cast<size_t>(length); i++)
 		{
 			this->_alloc.construct(&arr[i], *first);
 			first++;
@@ -135,7 +135,7 @@ public:
 		difference_type	distanc_;
 
 		distanc_ = TheDistance(first, last);
-		if (capacity() < distanc_)
+		if (capacity() < static_cast<size_type>(distanc_))
 		{
 			this->Capacity = distanc_;
 		}
@@ -163,7 +163,7 @@ public:
 		if (capacity() < n)
 			this->Capacity = n;
 		this->Size = n;
-		for (size_t i; i < tmp; i++)
+		for (size_t i = 0; i < tmp; i++)
 		{
 			_alloc.destroy(&arr[i]);
 		}
@@ -407,7 +407,6 @@ public:
 	void	insert(iterator position, size_type n, const value_type& val)
 	{
 		difference_type count = TheDistance(this->begin(), position);
-		iterator	iter = this->begin();
 		size_type s = 0;
 		size_t curr_size = this->size();
 		if (size() + n > capacity())
@@ -415,7 +414,7 @@ public:
 		else
 			this->Size += n;
 		s = curr_size - 1;
-		while (s   >=  (count))
+		while (s   >=  static_cast<size_type>(count))
 		{
 			arr[s +  (n)] = arr[s];
 			s--;
@@ -441,13 +440,13 @@ public:
 		else
 			this->Size += distance;
 		s = curr_size - 1;
-		while (s  >= count)
+		while (s  >= static_cast<size_type>(count))
 		{
 			arr[s + distance] = arr[s];
 			s--;
 		}
 		size_type count_2 = 0;
-		while (count_2 < distance && first != last)
+		while (count_2 < static_cast<size_type>(distance )&& first != last)
 		{
 			arr[count] = *first;
 			count_2++;

@@ -16,5 +16,5 @@ bool printBoolResult(std::fstream& fs, bool stl_bool, bool ft_bool)
 int main()
 {
     test_set();
-    system("ft_container");
+    // system("ft_container");
 }

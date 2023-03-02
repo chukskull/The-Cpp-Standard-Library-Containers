@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:39:31 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/01 20:27:57 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/02 13:31:01 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,7 +321,6 @@ class Tree
 						{
 							new_elem = new_elem->parent;
 							right_rotate(new_elem);
-							Node *new_elem_2 = new_elem->parent;
 							// print2D(head);
 						}
 						new_elem->parent->color = BLCK;

@@ -1,5 +1,5 @@
-CC= g++ 
-FLAGS= -std=c++98
+CC= c++ 
+FLAGS= -std=c++98 -Wall -Wextra -Werror
 RM= rm -rf
 FILES_VECTOR = tester_vector.cpp
 FILES_MAP = tester_map.cpp
@@ -19,7 +19,7 @@ HEADER_SET = set/set.hpp
 
 INCLUDE = $(HEADER_MAP) $(HEADER_STACK) $(HEADER_VECTOR) tester/tester.hpp
 
-bonus= 1
+# bonus= 1
 ifeq ($(bonus), 1)
 	INCLUDE = $(HEADER_MAP) $(HEADER_STACK) $(HEADER_VECTOR) tester/tester.hpp
 	TO_COMPILE = $(FILES_BONUS)

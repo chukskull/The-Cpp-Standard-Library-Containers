@@ -6,7 +6,7 @@
 /*   By: snagat <snagat@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 09:42:59 by snagat            #+#    #+#             */
-/*   Updated: 2023/03/02 09:08:58 by snagat           ###   ########.fr       */
+/*   Updated: 2023/03/02 13:26:22 by snagat           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,9 +326,9 @@ namespace ft
 				return ft::make_pair(lower_bound(x), upper_bound(x));
 			}
 		protected:
-			allocator_type		alloc;
-			key_compare			_cmp;
 			Tree<value_type, value_compare,key_type, Allocator>	tree_;
+			key_compare			_cmp;
+			allocator_type		alloc;
 
 		};
 	template <class Key, class T, class Compare, class Allocator>

@@ -509,15 +509,15 @@ void test_map()
 
         fs.open("./tester/maps_output/reverse_begin_const", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
-        std::map<int, std::string>::const_reverse_iterator stl_it = stl_map.rbegin();
+        // std::map<int, std::string>::const_reverse_iterator stl_it = stl_map.rbegin();
         // ft::map<int, std::string>::const_reverse_iterator ft_it = ft_map.crbegin();
 
         printMapAttributes(fs, stl_map, ft_map);
 
-        std::cout << "[";
+        // std::cout << "[";
         // std::cout << ((printSingleValue(fs, (*stl_it).first, (*ft_it).first) == true) ? OK : NOP );
         // std::cout << ((printSingleValue(fs, (*stl_it).second, (*ft_it).second) == true) ? OK : NOP );
-        std::cout << "]";
+        // std::cout << "]";
 
         fs << "\nCode executed:\n";
         fs << "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯\n";
