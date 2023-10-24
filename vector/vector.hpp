@@ -13,12 +13,12 @@
 
 namespace ft
 {
-	template <class T, class Allocator = std::allocator<T>>
+	template <class T, class Allocator = std::allocator<T> >
 	class vector
 	{
 
 	public:
-		// types:
+		// types:ß
 		template <bool B, class Tp = void>
 		struct enable_if
 		{
