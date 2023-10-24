@@ -1,0 +1,6 @@
+ft_containers
+*.opp
+*.gch
+vector_output/*
+stack_output/*
+map_output/*
